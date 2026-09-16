@@ -30,7 +30,7 @@ not a substitute for the living [Project Summary](PROJECT_SUMMARY.md).
 - [x] Check all local Markdown links.
 - [x] Read the README as a new user and repeat its installation procedure from
       a fresh clone of the public `v0.1.0` tag.
-- [ ] Confirm that planar and spatial model references match the implemented
+- [x] Confirm that planar and spatial model references match the implemented
       TOML fields.
 - [x] Confirm that public limitations are stated in the README and Project
       Summary.
@@ -55,6 +55,9 @@ September 16, 2026:
 - SimpView Web: 19 of 19 checks passed and the production bundle built;
 - npm production dependency audit: no known vulnerabilities reported;
 - public CI: SimpView Web and Julia 1.12 on macOS and Ubuntu passed;
+- model-reference audit: every registered planar and spatial element type is
+  covered, 70 standalone distributed models load, and the two remaining
+  continuation models correctly request their prerequisite static results;
 - planar quick start: complete 81-sample kinematic result;
 - spatial quick start: complete 301-sample dynamic result; and
 - GMC Rally Van: complete 301-frame, five-second dynamic result at 16 m/s.
