@@ -28,7 +28,8 @@ not a substitute for the living [Project Summary](PROJECT_SUMMARY.md).
 ## Documentation
 
 - [x] Check all local Markdown links.
-- [ ] Read the README as a new user and repeat its installation procedure.
+- [x] Read the README as a new user and repeat its installation procedure from
+      a fresh clone of the public `v0.1.0` tag.
 - [ ] Confirm that planar and spatial model references match the implemented
       TOML fields.
 - [x] Confirm that public limitations are stated in the README and Project
