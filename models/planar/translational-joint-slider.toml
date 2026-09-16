@@ -1,0 +1,54 @@
+[model]
+name = "translational_joint_slider"
+title = "Slider supported by a translational joint"
+dimension = "planar"
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 1.0
+output_samples = 101
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[ground]
+type = "ground"
+
+[ground.guide]
+type = "marker"
+
+[slider]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.020833333333333332
+position = [-0.5, 0.0]
+velocity = [1.0, 0.0]
+
+[slider.center]
+type = "marker"
+
+[slider.end_1]
+type = "marker"
+position = [-0.25, 0.0]
+
+[slider.end_2]
+type = "marker"
+position = [0.25, 0.0]
+
+[guide]
+type = "translational"
+markers = ["slider.center", "ground.guide"]
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, -9.81]
+bodies = ["slider"]
+
+[turning_load]
+type = "applied_torque"
+markers = ["slider.center", "ground.guide"]
+torque = 1.0

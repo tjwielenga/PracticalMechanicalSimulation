@@ -1,0 +1,166 @@
+[model]
+name = "steered_tire_test_rig"
+title = "Steered tire test rig"
+dimension = "spatial"
+
+[parameters]
+travel_speed = 0.50
+tire_radius = 0.50
+lateral_friction = 0.90
+lateral_shape_angle = 0.14
+
+[analysis]
+# Dynamic analysis retains the tire forces and the reactions required by the
+# prescribed test-rig motion, even though the rig itself is kinematic.
+mode = "dynamic"
+
+[simulation]
+start_time = 0.0
+end_time = 4.0
+output_samples = 401
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.road]
+type = "marker"
+position = [-0.50, -1.50, 0.0]
+
+[ground.road.graphics]
+shape = "xy_frame"
+axis_length = 0.35
+plane_size = 3.0
+plane_color = "gray65"
+opacity = 0.18
+label = "road"
+
+[ground.track]
+type = "marker"
+position = [0.0, 0.0, 0.49]
+# The track direction is the marker's local z-axis, rotated here onto global x.
+orientation = ["90 deg", 0.0, 1.0, 0.0]
+
+[carriage]
+type = "rigid_body"
+mass = 5.0
+inertia = [0.20, 0.20, 0.20]
+position = [0.0, 0.0, 0.78]
+
+[carriage.graphics]
+shape = "box"
+size = [0.45, 0.34, 0.12]
+color = "seagreen"
+
+[carriage.track]
+type = "marker"
+position = [0.0, 0.0, -0.29]
+orientation = ["90 deg", 0.0, 1.0, 0.0]
+
+[carriage.steer]
+type = "marker"
+position = [0.0, 0.0, -0.29]
+
+[track]
+type = "inline"
+markers = ["carriage.track", "ground.track"]
+
+[carriage_orientation]
+type = "orient"
+markers = ["carriage.track", "ground.track"]
+
+[travel]
+type = "translational_motion"
+markers = ["carriage.track", "ground.track"]
+function = "constant_speed"
+initial_distance = 0.0
+velocity = "travel_speed"
+
+[spindle]
+type = "rigid_body"
+mass = 3.0
+inertia = [0.08, 0.08, 0.08]
+position = [0.0, 0.0, 0.49]
+
+[spindle.graphics]
+shape = "cylinder"
+axis = "z"
+length = 0.42
+radius = 0.055
+color = "darkorange"
+
+[spindle.steer]
+type = "marker"
+
+[spindle.hub]
+type = "marker"
+orientation = ["-90 deg", 1.0, 0.0, 0.0]
+
+[steering_joint]
+type = "revolute"
+markers = ["spindle.steer", "carriage.steer"]
+rotation_coordinates = true
+
+[steering]
+type = "rotational_motion"
+joint = "steering_joint"
+function = "expression"
+# One cycle passes through +30 and -30 degrees.
+angle = "(pi/6) * sin(pi*t/2)"
+
+[wheel]
+type = "rigid_body"
+mass = 6.0
+inertia = [0.76, 0.38, 0.76]
+position = [0.0, 0.0, 0.49]
+
+[wheel.graphics]
+shape = "cylinder"
+axis = "y"
+length = 0.20
+radius = 0.50
+color = "steelblue"
+opacity = 0.80
+
+[wheel.hub]
+type = "marker"
+orientation = ["-90 deg", 1.0, 0.0, 0.0]
+
+[wheel.center]
+type = "marker"
+orientation = ["-90 deg", 1.0, 0.0, 0.0]
+
+[wheel_axle]
+type = "revolute"
+markers = ["wheel.hub", "spindle.hub"]
+rotation_coordinates = true
+
+[wheel_axle.initial.impose]
+# The wheel begins at its free-rolling speed and is then released dynamically.
+omega = 1.0
+
+[brake]
+type = "applied_torque"
+joint = "wheel_axle"
+torque = -45.0
+
+[tire]
+type = "rolling_tire"
+markers = ["wheel.center", "ground.road"]
+radius = 0.50
+regularization_speed = 0.05
+# The 0.01 m initial tire deflection produces the nominal 150 N load.
+normal_stiffness = 15000.0
+normal_damping_time_scale = 0.01
+longitudinal_expression = "tire.normal_force * 12.0 * tire.slip_ratio"
+lateral_expression = "-tire.normal_force * lateral_friction * tanh(tire.slip_angle / lateral_shape_angle)"
+friction_limit = "ellipse"
+mu_longitudinal = 1.0
+mu_lateral = 0.90

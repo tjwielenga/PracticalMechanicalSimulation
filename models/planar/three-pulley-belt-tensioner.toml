@@ -1,0 +1,187 @@
+[model]
+name = "three_pulley_belt_tensioner"
+title = "Three-pulley belt with a spring-loaded tensioner"
+dimension = "planar"
+
+[analysis]
+mode = "automatic"
+initialization = "static_equilibrium"
+
+[simulation]
+start_time = 0.0
+end_time = 3.0
+output_samples = 301
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-7
+maximum_step = 0.002
+
+[carrier]
+type = "ground"
+
+[carrier.driver_center]
+type = "marker"
+position = [-1.0, 0.0]
+
+[carrier.driven_center]
+type = "marker"
+position = [1.0, 0.0]
+
+[carrier.arm_pivot]
+type = "marker"
+position = [0.4, -1.6]
+
+[carrier.driver_upper_hint]
+type = "marker"
+position = [-1.0, 0.4]
+
+[carrier.driven_upper_hint]
+type = "marker"
+position = [1.0, 0.55]
+
+[carrier.driven_lower_hint]
+type = "marker"
+position = [1.35, -0.35]
+
+[carrier.tensioner_right_hint]
+type = "marker"
+position = [0.2, -1.0]
+
+[carrier.tensioner_left_hint]
+type = "marker"
+position = [-0.2, -1.0]
+
+[carrier.driver_lower_hint]
+type = "marker"
+position = [-1.25, -0.3]
+
+[driver]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.06125
+position = [-1.0, 0.0]
+angular_velocity = 2.0
+
+[driver.center]
+type = "marker"
+
+[driver.rim]
+type = "marker"
+position = [0.35, 0.0]
+
+[driven]
+type = "rigid_body"
+mass = 1.5
+inertia = 0.1875
+position = [1.0, 0.0]
+angular_velocity = 1.4
+
+[driven.center]
+type = "marker"
+
+[driven.rim]
+type = "marker"
+position = [0.5, 0.0]
+
+[tensioner_arm]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.0667
+position = [0.2, -1.2]
+
+[tensioner_arm.pivot]
+type = "marker"
+position = [0.2, -0.4]
+
+[tensioner_arm.pulley_center]
+type = "marker"
+position = [-0.2, 0.4]
+
+[tensioner]
+type = "rigid_body"
+mass = 0.5
+inertia = 0.015625
+position = [0.0, -0.8]
+angular_velocity = 2.8
+
+[tensioner.center]
+type = "marker"
+
+[tensioner.rim]
+type = "marker"
+position = [0.25, 0.0]
+
+[driver_bearing]
+type = "revolute"
+markers = ["driver.center", "carrier.driver_center"]
+
+[driven_bearing]
+type = "revolute"
+markers = ["driven.center", "carrier.driven_center"]
+
+[arm_bearing]
+type = "revolute"
+markers = ["tensioner_arm.pivot", "carrier.arm_pivot"]
+
+[tensioner_bearing]
+type = "revolute"
+markers = ["tensioner.center", "tensioner_arm.pulley_center"]
+
+[driver_pulley]
+type = "pulley"
+body = "driver"
+joint = "driver_bearing"
+pitch_radius = 0.35
+
+[driven_pulley]
+type = "pulley"
+body = "driven"
+joint = "driven_bearing"
+pitch_radius = 0.5
+
+[tensioner_pulley]
+type = "pulley"
+body = "tensioner"
+joint = "tensioner_bearing"
+pitch_radius = 0.25
+
+[belt]
+type = "belt"
+spans = ["belt.driver_to_driven", "belt.driven_to_tensioner", "belt.tensioner_to_driver"]
+stiffness = 100000.0
+damping_time_scale = 0.002
+initial_tension = 100.0
+
+[belt.driver_to_driven]
+type = "belt_span"
+pulleys = ["driver_pulley", "driven_pulley"]
+near_points = ["carrier.driver_upper_hint", "carrier.driven_upper_hint"]
+
+[belt.driven_to_tensioner]
+type = "belt_span"
+pulleys = ["driven_pulley", "tensioner_pulley"]
+near_points = ["carrier.driven_lower_hint", "carrier.tensioner_right_hint"]
+
+[belt.tensioner_to_driver]
+type = "belt_span"
+pulleys = ["tensioner_pulley", "driver_pulley"]
+near_points = ["carrier.tensioner_left_hint", "carrier.driver_lower_hint"]
+
+[arm_spring]
+type = "torsional_spring_damper"
+markers = ["tensioner_arm.pivot", "carrier.arm_pivot"]
+stiffness = 100.0
+damping_time_scale = 0.05
+free_angle = 0.5
+
+[drive]
+type = "rotational_motion"
+markers = ["driver.center", "carrier.driver_center"]
+function = "constant_speed"
+initial_angle = 0.0
+angular_velocity = 2.0
+
+[driven_resistance]
+type = "applied_torque"
+markers = ["driven.center", "carrier.driven_center"]
+torque = -1.0

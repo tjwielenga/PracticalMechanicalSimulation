@@ -1,0 +1,266 @@
+[model]
+name = "out_of_plane_four_pulley_belt"
+title = "Out-of-plane four-pulley belt drive"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[state_selection]
+method = "preferred"
+preferred_velocities = [
+    "pulley1_joint.omega",
+    "pulley2_joint.omega",
+    "pulley3_joint.omega",
+    "pulley4_joint.omega",
+]
+allow_fallback = true
+
+[simulation]
+start_time = 0.0
+end_time = 3.0
+output_samples = 601
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.pulley1_center]
+type = "marker"
+position = [0.22, 0.213431350032, -0.053357837508]
+orientation = [2.89661399046, 1.0, 0.0, 0.0]
+
+[ground.pulley2_center]
+type = "marker"
+position = [1.78, 0.196773982020, 0.098386991010]
+orientation = [2.67794504459, -1.0, 0.0, 0.0]
+
+[ground.pulley3_center]
+type = "marker"
+position = [1.81729994432, 1.79573512801, 0.760842522244]
+orientation = [2.40801132995, -0.554700196225, 0.832050294338, 0.0]
+
+[ground.pulley4_center]
+type = "marker"
+position = [0.177893658814, 1.78427225135, -0.312647818727]
+orientation = [2.47262857932, 0.316227766017, 0.948683298051, 0.0]
+
+# The hidden near-point markers select the intended tangent on each pulley.
+# Each straight belt span runs along one edge of the nonplanar quadrilateral.
+[ground.pulley1_out]
+type = "marker"
+position = [0.22, 0.0, 0.0]
+[ground.pulley1_out.graphics]
+visible = false
+
+[ground.pulley2_in]
+type = "marker"
+position = [1.78, 0.0, 0.0]
+[ground.pulley2_in.graphics]
+visible = false
+
+[ground.pulley2_out]
+type = "marker"
+position = [2.0, 0.196773982020, 0.098386991010]
+[ground.pulley2_out.graphics]
+visible = false
+
+[ground.pulley3_in]
+type = "marker"
+position = [2.0, 1.74092511130, 0.870462555651]
+[ground.pulley3_in.graphics]
+visible = false
+
+[ground.pulley3_out]
+type = "marker"
+position = [1.76827637504, 2.0, 0.826207281282]
+[ground.pulley3_out.graphics]
+visible = false
+
+[ground.pulley4_in]
+type = "marker"
+position = [0.203780988652, 2.0, -0.347164258511]
+[ground.pulley4_in.graphics]
+visible = false
+
+[ground.pulley4_out]
+type = "marker"
+position = [0.0, 1.75287925273, -0.438219813183]
+[ground.pulley4_out.graphics]
+visible = false
+
+[ground.pulley1_in]
+type = "marker"
+position = [0.0, 0.213431350032, -0.053357837508]
+[ground.pulley1_in.graphics]
+visible = false
+
+[ground.origin]
+type = "marker"
+
+[ground.origin.graphics]
+shape = "xy_frame"
+axis_length = 0.35
+plane_size = 0.14
+plane_color = "gray70"
+label = "ground frame"
+
+[pulley1]
+type = "rigid_body"
+mass = 0.6
+inertia = [0.012, 0.012, 0.024]
+position = [0.22, 0.213431350032, -0.053357837508]
+orientation = [2.89661399046, 1.0, 0.0, 0.0]
+
+[pulley1.graphics]
+shape = "pulley"
+marker = "pulley1.center"
+pitch_radius = 0.22
+width = 0.10
+color = "steelblue"
+
+[pulley1.center]
+type = "marker"
+
+[pulley2]
+type = "rigid_body"
+mass = 0.6
+inertia = [0.012, 0.012, 0.024]
+position = [1.78, 0.196773982020, 0.098386991010]
+orientation = [2.67794504459, -1.0, 0.0, 0.0]
+
+[pulley2.graphics]
+shape = "pulley"
+marker = "pulley2.center"
+pitch_radius = 0.22
+width = 0.10
+color = "darkorange"
+
+[pulley2.center]
+type = "marker"
+
+[pulley3]
+type = "rigid_body"
+mass = 0.6
+inertia = [0.012, 0.012, 0.024]
+position = [1.81729994432, 1.79573512801, 0.760842522244]
+orientation = [2.40801132995, -0.554700196225, 0.832050294338, 0.0]
+
+[pulley3.graphics]
+shape = "pulley"
+marker = "pulley3.center"
+pitch_radius = 0.22
+width = 0.10
+color = "seagreen"
+
+[pulley3.center]
+type = "marker"
+
+[pulley4]
+type = "rigid_body"
+mass = 0.6
+inertia = [0.012, 0.012, 0.024]
+position = [0.177893658814, 1.78427225135, -0.312647818727]
+orientation = [2.47262857932, 0.316227766017, 0.948683298051, 0.0]
+
+[pulley4.graphics]
+shape = "pulley"
+marker = "pulley4.center"
+pitch_radius = 0.22
+width = 0.10
+color = "mediumpurple"
+
+[pulley4.center]
+type = "marker"
+
+[pulley1_joint]
+type = "revolute"
+markers = ["pulley1.center", "ground.pulley1_center"]
+
+[pulley2_joint]
+type = "revolute"
+markers = ["pulley2.center", "ground.pulley2_center"]
+
+[pulley3_joint]
+type = "revolute"
+markers = ["pulley3.center", "ground.pulley3_center"]
+
+[pulley4_joint]
+type = "revolute"
+markers = ["pulley4.center", "ground.pulley4_center"]
+
+[pulley1_definition]
+type = "pulley"
+body = "pulley1"
+joint = "pulley1_joint"
+pitch_radius = 0.22
+
+[pulley2_definition]
+type = "pulley"
+body = "pulley2"
+joint = "pulley2_joint"
+pitch_radius = 0.22
+
+[pulley3_definition]
+type = "pulley"
+body = "pulley3"
+joint = "pulley3_joint"
+pitch_radius = 0.22
+
+[pulley4_definition]
+type = "pulley"
+body = "pulley4"
+joint = "pulley4_joint"
+pitch_radius = 0.22
+
+[belt]
+type = "belt"
+spans = [
+    "belt.pulley1_to_pulley2",
+    "belt.pulley2_to_pulley3",
+    "belt.pulley3_to_pulley4",
+    "belt.pulley4_to_pulley1",
+]
+stiffness = 50000.0
+damping_time_scale = 0.001
+initial_tension = 35.0
+
+[belt.pulley1_to_pulley2]
+type = "belt_span"
+pulleys = ["pulley1_definition", "pulley2_definition"]
+near_points = ["ground.pulley1_out", "ground.pulley2_in"]
+
+[belt.pulley2_to_pulley3]
+type = "belt_span"
+pulleys = ["pulley2_definition", "pulley3_definition"]
+near_points = ["ground.pulley2_out", "ground.pulley3_in"]
+
+[belt.pulley3_to_pulley4]
+type = "belt_span"
+pulleys = ["pulley3_definition", "pulley4_definition"]
+near_points = ["ground.pulley3_out", "ground.pulley4_in"]
+
+[belt.pulley4_to_pulley1]
+type = "belt_span"
+pulleys = ["pulley4_definition", "pulley1_definition"]
+near_points = ["ground.pulley4_out", "ground.pulley1_in"]
+
+[drive]
+type = "rotational_motion"
+joint = "pulley1_joint"
+function = "constant_speed"
+initial_angle = "0 deg"
+angular_velocity = 1.5
+
+[resistance]
+type = "applied_torque"
+joint = "pulley3_joint"
+stiffness = 0.0
+damping = 0.025

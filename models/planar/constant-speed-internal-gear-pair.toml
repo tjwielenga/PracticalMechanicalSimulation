@@ -1,0 +1,86 @@
+[model]
+name = "constant_speed_internal_gear_pair"
+title = "Internal gear pair on a fixed carrier"
+dimension = "planar"
+
+[parameters]
+drive_speed = 0.6
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 6.0
+output_samples = 301
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[carrier]
+type = "ground"
+
+[carrier.ring_bearing]
+type = "marker"
+position = [0.0, 0.0]
+
+[carrier.contact]
+type = "marker"
+position = [1.4, 0.0]
+
+[carrier.pinion_bearing]
+type = "marker"
+position = [1.0, 0.0]
+
+[ring]
+type = "rigid_body"
+mass = 3.0
+inertia = 5.88
+position = [0.0, 0.0]
+
+[ring.center]
+type = "marker"
+
+[ring.rim]
+type = "marker"
+position = [1.4, 0.0]
+
+[pinion]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.08
+position = [1.0, 0.0]
+
+[pinion.center]
+type = "marker"
+
+[pinion.rim]
+type = "marker"
+position = [0.4, 0.0]
+
+[ring_bearing]
+type = "revolute"
+markers = ["ring.center", "carrier.ring_bearing"]
+
+[pinion_bearing]
+type = "revolute"
+markers = ["pinion.center", "carrier.pinion_bearing"]
+
+[gear_pair]
+type = "gear_pair"
+joints = ["ring_bearing", "pinion_bearing"]
+contact_marker = "carrier.contact"
+phase = "initial"
+
+[pinion_load]
+type = "applied_torque"
+markers = ["pinion.center", "carrier.pinion_bearing"]
+torque = 5.0
+
+[drive]
+type = "rotational_motion"
+markers = ["ring.center", "carrier.ring_bearing"]
+function = "constant_speed"
+initial_angle = 0.0
+angular_velocity = "drive_speed"

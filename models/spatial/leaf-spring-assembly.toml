@@ -1,0 +1,81 @@
+[model]
+name = "leaf_spring_assembly"
+title = "Reusable leaf-spring assembly"
+dimension = "spatial"
+assemblies = ["../../assemblies/spatial/leaf_spring.toml"]
+
+[analysis]
+mode = "dynamic"
+initialization = "static_equilibrium"
+static_method = "dynamic_relaxation"
+relaxation_duration = 0.25
+relaxation_max_cycles = 10
+
+[simulation]
+start_time = 0.0
+end_time = 1.0
+output_samples = 61
+relative_tolerance = 1.0e-6
+absolute_tolerance = 1.0e-8
+initial_step = 1.0e-7
+maximum_step = 0.002
+
+[parameters]
+dynamic_load = 1000.0
+load_frequency_hz = 0.5
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.origin]
+type = "marker"
+
+[ground.origin.graphics]
+shape = "xy_frame"
+axis_length = 0.25
+plane_size = 0.1
+plane_color = "gray70"
+opacity = 0.16
+
+[leaf]
+type = "rigid_body"
+mass = 3.2
+inertia = [0.0016, 0.035, 0.0335]
+position = [0.0, 0.0, 0.0]
+
+[rear_spring]
+type = "leaf_spring"
+frame = "ground"
+leaf = "leaf"
+front_eye = [-0.6390, 0.0, -0.0689]
+leaf_center = [0.0, 0.0, 0.0]
+rear_shackle_eye = [0.7047, 0.0, 0.0692]
+rear_frame_eye = [0.7086, 0.0, 0.2024]
+up = [0.0, 0.0, 1.0]
+leaf_stiffness = 36532.0
+twist_stiffness = 2740.0
+width = 0.076
+mount_stiffness = [7000000.0, 7000000.0, 1000000.0]
+mount_rotational_stiffness = [10000.0, 10000.0, 81.4]
+damping_time_scale = 0.006
+nominal_load = 1000.0
+
+[leaf.load]
+type = "marker"
+
+[ground.load_axis]
+type = "marker"
+
+[vertical_load]
+type = "applied_force"
+markers = ["leaf.load", "ground.load_axis"]
+expression = "-dynamic_load*sin(2*pi*load_frequency_hz*t)"
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, 0.0, -9.80665]
+bodies = ["leaf", "rear_spring.front_link", "rear_spring.rear_link", "rear_spring.shackle"]

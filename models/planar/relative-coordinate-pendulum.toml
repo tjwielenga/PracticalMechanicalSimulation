@@ -1,0 +1,55 @@
+[model]
+name = "relative_coordinate_pendulum"
+title = "Pendulum with a revolute relative coordinate"
+dimension = "planar"
+
+[analysis]
+mode = "dynamic"
+initialization = "static_equilibrium"
+
+[simulation]
+start_time = 0.0
+end_time = 2.0
+output_samples = 201
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[ground]
+type = "ground"
+
+[ground.origin]
+type = "marker"
+
+[pendulum]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.08333333333333333
+position = [0.25, -0.4330127018922193]
+orientation = 0.5235987755982988
+velocity = [0.5, 0.0]
+angular_velocity = 1.0
+
+[pendulum.pin]
+type = "marker"
+position = [0.0, 0.5]
+
+[pendulum.tip]
+type = "marker"
+position = [0.0, -0.5]
+
+[pin]
+type = "revolute"
+markers = ["pendulum.pin", "ground.origin"]
+rotation_coordinates = true
+
+[gravity]
+type = "gravity"
+bodies = ["pendulum"]
+acceleration = [0.0, -9.81]
+
+[state_selection]
+method = "preferred"
+preferred_velocities = ["pin.omega"]
+allow_fallback = false

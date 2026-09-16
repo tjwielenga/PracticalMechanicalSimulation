@@ -1,0 +1,88 @@
+[model]
+name = "constant_speed_rack_and_pinion"
+title = "Constant-speed rack and pinion"
+dimension = "planar"
+
+[parameters]
+drive_speed = 1.2566370614359172
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 5.0
+output_samples = 301
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[carrier]
+type = "ground"
+
+[carrier.rack_guide]
+type = "marker"
+position = [0.1, 0.0]
+orientation = -1.5707963267948966
+
+[carrier.pinion_bearing]
+type = "marker"
+position = [-0.4, 0.0]
+
+[rack]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.1875
+position = [0.1, 0.0]
+orientation = -1.5707963267948966
+
+[rack.guide]
+type = "marker"
+
+[rack.end_1]
+type = "marker"
+position = [-0.75, 0.0]
+
+[rack.end_2]
+type = "marker"
+position = [0.75, 0.0]
+
+[pinion]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.08
+position = [-0.4, 0.0]
+
+[pinion.center]
+type = "marker"
+
+[pinion.rim]
+type = "marker"
+position = [0.4, 0.0]
+
+[rack_guide]
+type = "translational"
+markers = ["rack.guide", "carrier.rack_guide"]
+
+[pinion_bearing]
+type = "revolute"
+markers = ["pinion.center", "carrier.pinion_bearing"]
+
+[rack_and_pinion]
+type = "rack_and_pinion"
+joints = ["rack_guide", "pinion_bearing"]
+pitch_radius = 0.4
+phase = "initial"
+
+[drive]
+type = "rotational_motion"
+markers = ["pinion.center", "carrier.pinion_bearing"]
+function = "constant_speed"
+initial_angle = 0.0
+angular_velocity = "drive_speed"
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, -9.81]
+bodies = ["rack"]

@@ -1,0 +1,14 @@
+#!/usr/bin/env -S julia --project=@script/..
+
+using PracticalMechanicalSimulation
+
+if length(ARGS) != 1
+    println(stderr, "usage: finalize-result RESULT.simp")
+    exit(2)
+end
+
+path = finalize_result!(only(ARGS))
+result = read_result(path)
+println(path)
+println("  status: ", result.status)
+println("  last saved time: ", last(result.times))

@@ -1,0 +1,77 @@
+[model]
+name = "offset_cm_spherical_pendulum"
+title = "Spherical pendulum defined from its pivot reference frame"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 4.0
+output_samples = 241
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.pivot]
+type = "marker"
+position = [0.0, 0.0, 1.25]
+
+[ground.pivot.graphics]
+shape = "xy_frame"
+axis_length = 0.28
+plane_size = 0.12
+plane_color = "gray70"
+label = "ground.pivot"
+
+[pendulum]
+type = "rigid_body"
+mass = 2.0
+inertia = [0.67, 0.67, 0.03]
+center_of_mass = "pendulum.cm"
+
+# Position and orientation locate the pivot reference frame. The loader moves
+# the internal translational state to the center of mass.
+position = [0.0, 0.0, 1.25]
+orientation = ["35 deg", 0.0, 1.0, 0.0]
+
+[pendulum.graphics]
+shape = "cylinder"
+marker = "pendulum.cm"
+axis = "z"
+radius = 0.09
+length = 2.0
+color = "steelblue"
+
+[pendulum.pivot]
+type = "marker"
+
+[pendulum.cm]
+type = "marker"
+position = [0.0, 0.0, -1.0]
+
+[pendulum.cm.graphics]
+shape = "xy_frame"
+axis_length = 0.18
+plane_size = 0.07
+plane_color = "lightskyblue"
+opacity = 0.14
+label = "pendulum.cm"
+
+[pin]
+type = "spherical"
+markers = ["pendulum.pivot", "ground.pivot"]
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, 0.0, -9.81]
+bodies = ["pendulum"]

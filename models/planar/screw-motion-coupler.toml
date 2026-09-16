@@ -1,0 +1,135 @@
+[model]
+name = "screw_motion_coupler"
+title = "Rotation converted to translation by a screw"
+dimension = "planar"
+
+[analysis]
+mode = "automatic"
+
+[state_selection]
+method = "preferred"
+preferred_velocities = ["screw_bearing.omega"]
+allow_fallback = false
+
+[simulation]
+start_time = 0.0
+end_time = 2.0
+output_samples = 201
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[graphics.colors]
+support_color = "dimgray"
+screw_color = "steelblue"
+nut_color = "darkorange"
+
+[support]
+type = "ground"
+
+[support.graphics]
+color = "support_color"
+show_default = false
+
+[support.graphics.rail]
+shape = "cylinder"
+markers = ["support.rail_start", "support.rail_end"]
+radius = 0.025
+
+[support.bearing]
+type = "marker"
+position = [0.0, 0.0]
+
+[support.guide]
+type = "marker"
+position = [0.8, 0.0]
+
+[support.measurement_axis]
+type = "marker"
+position = [0.0, 0.0]
+orientation = -1.5707963267948966
+
+[support.rail_start]
+type = "marker"
+position = [-0.20, 0.0]
+
+[support.rail_end]
+type = "marker"
+position = [1.60, 0.0]
+
+[screw]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.10
+position = [0.0, 0.0]
+
+[screw.graphics]
+color = "screw_color"
+show_default = false
+
+[screw.graphics.hub]
+shape = "cylinder"
+marker = "screw.center"
+axis = "z"
+length = 0.12
+radius = 0.15
+
+[screw.graphics.indicator]
+shape = "cylinder"
+markers = ["screw.center", "screw.indicator"]
+radius = 0.035
+
+[screw.center]
+type = "marker"
+
+[screw.indicator]
+type = "marker"
+position = [0.0, 0.32]
+
+[nut]
+type = "rigid_body"
+mass = 0.5
+inertia = 0.025
+position = [0.8, 0.0]
+
+[nut.graphics]
+color = "nut_color"
+show_default = false
+
+[nut.graphics.block]
+shape = "box"
+marker = "nut.center"
+size = [0.24, 0.28, 0.16]
+
+[nut.center]
+type = "marker"
+
+[screw_bearing]
+type = "revolute"
+markers = ["screw.center", "support.bearing"]
+rotation_coordinates = true
+
+[nut_guide]
+type = "translational"
+markers = ["nut.center", "support.guide"]
+
+[nut_travel]
+type = "distance_coordinate"
+markers = ["nut.center", "support.measurement_axis"]
+
+[screw_coupler]
+type = "coupler"
+coordinates = ["nut_travel.distance", "screw_bearing.rotation"]
+# The nut advances 0.05 length units for each radian of screw rotation.
+coefficients = [1.0, -0.05]
+offset = "initial"
+
+[drive_torque]
+type = "applied_torque"
+markers = ["screw.center", "support.bearing"]
+torque = 0.5

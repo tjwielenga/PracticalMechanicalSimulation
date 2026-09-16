@@ -1,0 +1,116 @@
+[model]
+name = "spatial_screw_motion_coupler"
+title = "Spatial rotation converted to translation by a screw"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[state_selection]
+method = "preferred"
+preferred_velocities = ["screw_bearing.omega"]
+allow_fallback = false
+
+[simulation]
+start_time = 0.0
+end_time = 2.0
+output_samples = 401
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[support]
+type = "ground"
+
+[support.bearing]
+type = "marker"
+orientation = ["90 deg", 0.0, 1.0, 0.0]
+
+[support.bearing.graphics]
+shape = "xy_frame"
+axis_length = 0.35
+plane_size = 0.14
+plane_color = "gray70"
+label = "screw axis"
+
+[support.guide]
+type = "marker"
+position = [0.4, 0.0, 0.0]
+orientation = ["90 deg", 0.0, 1.0, 0.0]
+
+[screw]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.08, 0.08, 0.015]
+orientation = ["90 deg", 0.0, 1.0, 0.0]
+
+[screw.graphics]
+show_default = false
+color = "steelblue"
+
+[screw.graphics.shaft]
+shape = "cylinder"
+marker = "screw.center"
+axis = "z"
+length = 2.0
+radius = 0.07
+
+[screw.graphics.indicator]
+shape = "cylinder"
+markers = ["screw.center", "screw.indicator"]
+radius = 0.025
+
+[screw.center]
+type = "marker"
+
+[screw.indicator]
+type = "marker"
+position = [0.0, 0.25, 0.0]
+
+[nut]
+type = "rigid_body"
+mass = 0.5
+inertia = [0.01, 0.01, 0.01]
+position = [0.4, 0.0, 0.0]
+orientation = ["90 deg", 0.0, 1.0, 0.0]
+
+[nut.graphics]
+show_default = false
+color = "darkorange"
+
+[nut.graphics.block]
+shape = "box"
+marker = "nut.center"
+size = [0.24, 0.30, 0.30]
+
+[nut.center]
+type = "marker"
+
+[screw_bearing]
+type = "revolute"
+markers = ["screw.center", "support.bearing"]
+
+[nut_guide]
+type = "inline"
+markers = ["nut.center", "support.guide"]
+
+[nut_orientation]
+type = "orient"
+markers = ["nut.center", "support.guide"]
+
+[screw_coupler]
+type = "coupler"
+coordinates = ["nut_guide.distance", "screw_bearing.rotation"]
+# The nut advances 0.08 length units for each radian of screw rotation.
+coefficients = [1.0, -0.08]
+offset = "initial"
+
+[drive]
+type = "applied_torque"
+joint = "screw_bearing"
+torque = 0.05

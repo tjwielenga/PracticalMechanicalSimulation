@@ -1,0 +1,126 @@
+[model]
+name = "torque_driven_four_bar"
+title = "Torque-driven spatial four-bar"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 10.0
+output_samples = 2001
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.left_pin]
+type = "marker"
+
+[ground.left_pin.graphics]
+shape = "xy_frame"
+axis_length = 0.32
+plane_size = 0.14
+plane_color = "gray65"
+label = "crank axis"
+
+[ground.right_pin]
+type = "marker"
+position = [2.5, 0.0, 0.0]
+
+[ground.right_pin.graphics]
+shape = "xy_frame"
+axis_length = 0.32
+plane_size = 0.14
+plane_color = "gray65"
+label = "rocker axis"
+
+[crank]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.0024, 0.08453333333333334, 0.08453333333333334]
+position = [0.3535533905932738, 0.3535533905932737, 0.0]
+orientation = ["45 deg", 0.0, 0.0, 1.0]
+
+[crank.graphics]
+shape = "box"
+size = [1.0, 0.12, 0.12]
+color = "steelblue"
+
+[crank.ground_pin]
+type = "marker"
+position = [-0.5, 0.0, 0.0]
+
+[crank.coupler_pin]
+type = "marker"
+position = [0.5, 0.0, 0.0]
+
+[coupler]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.0024, 0.5220333333333333, 0.5220333333333333]
+position = [1.787046883051505, 1.336574315205503, 0.0]
+orientation = ["30.23673878498586 deg", 0.0, 0.0, 1.0]
+
+[coupler.graphics]
+shape = "box"
+size = [2.5, 0.12, 0.12]
+color = "darkorange"
+
+[coupler.crank_pin]
+type = "marker"
+position = [-1.25, 0.0, 0.0]
+
+[coupler.rocker_pin]
+type = "marker"
+position = [1.25, 0.0, 0.0]
+
+[rocker]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.0024, 0.33453333333333334, 0.33453333333333334]
+position = [2.683493492458232, 0.9830209246122288, 0.0]
+orientation = ["79.42668761227669 deg", 0.0, 0.0, 1.0]
+
+[rocker.graphics]
+shape = "box"
+size = [2.0, 0.12, 0.12]
+color = "seagreen"
+
+[rocker.ground_pin]
+type = "marker"
+position = [-1.0, 0.0, 0.0]
+
+[rocker.coupler_pin]
+type = "marker"
+position = [1.0, 0.0, 0.0]
+
+[crank_ground]
+type = "revolute"
+markers = ["crank.ground_pin", "ground.left_pin"]
+rotation_coordinates = true
+
+[crank_coupler]
+type = "revolute"
+markers = ["coupler.crank_pin", "crank.coupler_pin"]
+
+[coupler_rocker]
+type = "revolute"
+markers = ["rocker.coupler_pin", "coupler.rocker_pin"]
+
+[rocker_ground]
+type = "revolute"
+markers = ["rocker.ground_pin", "ground.right_pin"]
+
+[drive]
+type = "applied_torque"
+joint = "crank_ground"
+torque = 0.5

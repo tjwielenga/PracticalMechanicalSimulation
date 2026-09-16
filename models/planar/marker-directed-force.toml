@@ -1,0 +1,87 @@
+[model]
+name = "marker_directed_force"
+title = "Upward ground-directed force on a link"
+dimension = "planar"
+
+[analysis]
+mode = "automatic"
+
+[state_selection]
+method = "preferred"
+preferred_velocities = ["link.omega"]
+allow_fallback = false
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[graphics.colors]
+link_color = "steelblue"
+ground_color = "dimgray"
+load_color = "dodgerblue3"
+
+[graphics.loads]
+show_reactions = true
+show_applied_loads = true
+show_torques = true
+applied_color = "load_color"
+
+[simulation]
+start_time = 0.0
+end_time = 4.0
+output_samples = 241
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[ground]
+type = "ground"
+
+[ground.graphics]
+color = "ground_color"
+
+[ground.pin]
+type = "marker"
+
+[ground.force_direction]
+type = "marker"
+orientation = 0.0
+
+[link]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.08333333333333333
+position = [0.5, 0.0]
+
+[link.graphics]
+show_default = false
+color = "link_color"
+
+[link.graphics.member]
+shape = "cylinder"
+markers = ["link.pin", "link.tip"]
+radius = 0.045
+
+[link.pin]
+type = "marker"
+position = [-0.5, 0.0]
+
+[link.tip]
+type = "marker"
+position = [1.0, 0.0]
+
+[pin]
+type = "revolute"
+markers = ["link.pin", "ground.pin"]
+
+[pin_damper]
+type = "torsional_spring_damper"
+markers = ["link.pin", "ground.pin"]
+stiffness = 0.0
+damping = 0.2
+
+[push]
+type = "applied_force"
+markers = ["link.tip", "ground.force_direction"]
+force = 1.0

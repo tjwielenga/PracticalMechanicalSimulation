@@ -1,0 +1,31 @@
+#!/bin/sh
+
+set -eu
+
+simp_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+"$simp_root/bin/simpview-server" &
+simp_service_pid=$!
+
+cleanup_simpview() {
+    kill "$simp_service_pid" 2>/dev/null || true
+    wait "$simp_service_pid" 2>/dev/null || true
+}
+trap cleanup_simpview EXIT INT TERM
+
+echo "Waiting for the SimpView model service..."
+simp_attempt=0
+while ! curl -fsS http://127.0.0.1:8123/api/health >/dev/null 2>&1; do
+    kill -0 "$simp_service_pid" 2>/dev/null || {
+        echo "The SimpView model service stopped during startup." >&2
+        exit 1
+    }
+    simp_attempt=$((simp_attempt + 1))
+    [ "$simp_attempt" -lt 480 ] || {
+        echo "The SimpView model service did not become ready." >&2
+        exit 1
+    }
+    sleep 0.25
+done
+
+cd "$simp_root/apps/SimpViewWeb"
+npm run dev -- --open

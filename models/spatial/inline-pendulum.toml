@@ -1,0 +1,76 @@
+[model]
+name = "inline_pendulum"
+title = "Spatial pendulum suspended from a horizontal inline"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[state_selection]
+method = "preferred"
+preferred_velocities = [
+    "guide.velocity",
+    "pendulum.omega_x",
+    "pendulum.omega_y",
+    "pendulum.omega_z",
+]
+allow_fallback = false
+
+[simulation]
+start_time = 0.0
+end_time = 6.0
+output_samples = 601
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.guide]
+type = "marker"
+orientation = ["90°", 0.0, 1.0, 0.0]
+
+[ground.guide.graphics]
+shape = "xy_frame"
+axis_length = 0.30
+plane_size = 0.14
+plane_color = "gray70"
+opacity = 0.18
+label = "horizontal guide"
+
+[pendulum]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.001, 0.08333333333333333, 0.08333333333333333]
+position = [0.0, 0.0, -0.5]
+orientation = ["90°", 0.0, 1.0, 0.0]
+velocity = [0.6, 0.75, 0.0]
+
+[pendulum.graphics]
+shape = "box"
+size = [1.0, 0.08, 0.08]
+color = "steelblue"
+
+[pendulum.suspension]
+type = "marker"
+position = [-0.5, 0.0, 0.0]
+
+[pendulum.tip]
+type = "marker"
+position = [0.5, 0.0, 0.0]
+
+[guide]
+type = "inline"
+markers = ["pendulum.suspension", "ground.guide"]
+translation_coordinates = true
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, 0.0, -9.81]
+bodies = ["pendulum"]

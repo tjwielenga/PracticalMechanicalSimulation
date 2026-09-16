@@ -1,0 +1,51 @@
+[model]
+name = "distance_measures"
+title = "Planar span and directed-distance measurements"
+dimension = "planar"
+
+[analysis]
+mode = "dynamic"
+
+[simulation]
+start_time = 0.0
+end_time = 2.0
+output_samples = 201
+relative_tolerance = 1.0e-8
+absolute_tolerance = 1.0e-10
+initial_step = 1.0e-6
+maximum_step = 0.02
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.origin]
+type = "marker"
+
+[body]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.05
+position = [1.0, 0.5]
+velocity = [0.2, -0.1]
+
+[body.center]
+type = "marker"
+
+[range]
+type = "span"
+markers = ["ground.origin", "body.center"]
+
+[height]
+type = "distance_coordinate"
+markers = ["body.center", "ground.origin"]
+
+# This zero force verifies that both measured coordinates are available to
+# expressions without changing the free body's motion.
+[measurement_probe]
+type = "applied_force"
+markers = ["body.center", "ground.origin"]
+expression = "0.0*range.distance + 0.0*height.velocity"

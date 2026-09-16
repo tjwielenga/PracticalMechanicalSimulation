@@ -1,0 +1,64 @@
+[model]
+name = "distance_measures"
+title = "Spatial span and directed-distance measurements"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 2.0
+output_samples = 201
+relative_tolerance = 1.0e-8
+absolute_tolerance = 1.0e-10
+initial_step = 1.0e-6
+maximum_step = 0.02
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.origin]
+type = "marker"
+
+[ground.origin.graphics]
+shape = "xy_frame"
+axis_length = 0.5
+plane_size = 0.22
+plane_color = "gray70"
+opacity = 0.18
+label = "ground.origin"
+
+[body]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.04, 0.05, 0.06]
+position = [1.0, 0.5, 0.75]
+velocity = [0.2, -0.1, 0.3]
+
+[body.graphics]
+shape = "box"
+size = [0.45, 0.28, 0.20]
+color = "steelblue"
+
+[body.center]
+type = "marker"
+
+[range]
+type = "span"
+markers = ["ground.origin", "body.center"]
+
+[height]
+type = "directed_distance"
+markers = ["body.center", "ground.origin"]
+
+# A zero force demonstrates that measurement distance and velocity values are
+# available to model expressions without changing this free body's motion.
+[measurement_probe]
+type = "applied_force"
+markers = ["body.center", "ground.origin"]
+expression = "0.0*range.distance + 0.0*height.velocity"

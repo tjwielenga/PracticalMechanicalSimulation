@@ -1,0 +1,180 @@
+[model]
+name = "planetary_gear_set"
+title = "Planetary gear set with moving carrier"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[state_selection]
+method = "preferred"
+preferred_velocities = ["sun_joint.omega"]
+allow_fallback = false
+
+[simulation]
+start_time = 0.0
+end_time = 8.0
+output_samples = 481
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.02
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.origin]
+type = "marker"
+
+[ground.origin.graphics]
+shape = "xy_frame"
+axis_length = 0.30
+plane_size = 0.12
+plane_color = "gray70"
+label = "gear-set axis"
+
+[ground.sun_axis]
+type = "marker"
+
+[ground.ring_axis]
+type = "marker"
+
+[ground.carrier_axis]
+type = "marker"
+
+[sun]
+type = "rigid_body"
+mass = 0.8
+inertia = [0.03, 0.03, 0.06]
+
+[sun.graphics]
+shape = "gear"
+marker = "sun.center"
+pitch_radius = 0.4
+width = 0.12
+color = "steelblue"
+
+[sun.center]
+type = "marker"
+
+[sun.indicator]
+type = "marker"
+position = [0.32, 0.0, 0.0]
+
+[ring]
+type = "rigid_body"
+mass = 1.8
+inertia = [0.18, 0.18, 0.32]
+
+# The current gear graphic is a pitch cylinder rather than an annulus.
+# Transparency keeps the sun, planet, carrier, and reactions visible.
+[ring.graphics]
+shape = "gear"
+marker = "ring.center"
+pitch_radius = 1.0
+width = 0.08
+color = "gray55"
+opacity = 0.18
+
+[ring.center]
+type = "marker"
+
+[ring.indicator]
+type = "marker"
+position = [0.90, 0.0, 0.0]
+
+[carrier]
+type = "rigid_body"
+mass = 0.7
+inertia = [0.06, 0.06, 0.12]
+
+[carrier.graphics]
+shape = "box"
+size = [1.55, 0.10, 0.07]
+color = "seagreen"
+opacity = 0.72
+
+[carrier.center]
+type = "marker"
+
+[carrier.planet_axis]
+type = "marker"
+position = [0.7, 0.0, 0.0]
+
+[carrier.sun_planet_contact]
+type = "marker"
+position = [0.4, 0.0, 0.0]
+
+[carrier.planet_ring_contact]
+type = "marker"
+position = [1.0, 0.0, 0.0]
+
+[planet]
+type = "rigid_body"
+mass = 0.5
+inertia = [0.015, 0.015, 0.03]
+position = [0.7, 0.0, 0.0]
+
+[planet.graphics]
+shape = "gear"
+marker = "planet.center"
+pitch_radius = 0.3
+width = 0.12
+color = "darkorange"
+
+[planet.center]
+type = "marker"
+
+[planet.indicator]
+type = "marker"
+position = [0.24, 0.0, 0.0]
+
+[sun_joint]
+type = "revolute"
+markers = ["sun.center", "ground.sun_axis"]
+
+[ring_joint]
+type = "revolute"
+markers = ["ring.center", "ground.ring_axis"]
+
+[carrier_joint]
+type = "revolute"
+markers = ["carrier.center", "ground.carrier_axis"]
+
+[planet_joint]
+type = "revolute"
+markers = ["planet.center", "carrier.planet_axis"]
+
+[sun_planet]
+type = "gear_pair"
+joints = ["sun_joint", "planet_joint"]
+contact_marker = "carrier.sun_planet_contact"
+phase = "initial"
+
+[planet_ring]
+type = "gear_pair"
+joints = ["ring_joint", "planet_joint"]
+contact_marker = "carrier.planet_ring_contact"
+phase = "initial"
+
+[hold_ring]
+type = "rotational_motion"
+joint = "ring_joint"
+function = "constant_speed"
+initial_angle = "0 deg"
+angular_velocity = 0.0
+
+[sun_torque]
+type = "applied_torque"
+joint = "sun_joint"
+torque = 0.02
+
+[carrier_drag]
+type = "applied_torque"
+joint = "carrier_joint"
+stiffness = 0.0
+damping = 0.02

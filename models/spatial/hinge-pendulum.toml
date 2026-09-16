@@ -1,0 +1,81 @@
+[model]
+name = "hinge_pendulum"
+title = "Spatial hinge pendulum"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[state_selection]
+method = "preferred"
+preferred_velocities = ["axis.omega"]
+allow_fallback = false
+
+[simulation]
+start_time = 0.0
+end_time = 3.0
+output_samples = 301
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.pin]
+type = "marker"
+
+[ground.pin.graphics]
+shape = "xy_frame"
+axis_length = 0.35
+plane_size = 0.16
+plane_color = "gray65"
+label = "hinge axis"
+
+[pendulum]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.001, 0.08333333333333333, 0.08333333333333333]
+position = [0.5, 0.0, 0.0]
+velocity = [0.0, 0.2, 0.0]
+angular_velocity = [0.0, 0.0, 0.4]
+
+[pendulum.graphics]
+shape = "box"
+size = [1.0, 0.08, 0.08]
+color = "steelblue"
+
+[pendulum.pin]
+type = "marker"
+position = [-0.5, 0.0, 0.0]
+
+[pendulum.tip]
+type = "marker"
+position = [0.5, 0.0, 0.0]
+
+[pendulum.tip.graphics]
+shape = "xy_frame"
+axis_length = 0.18
+plane_size = 0.07
+plane_color = "lightskyblue"
+opacity = 0.16
+label = "pendulum.tip"
+
+[pin]
+type = "spherical"
+markers = ["pendulum.pin", "ground.pin"]
+
+[axis]
+type = "hinge"
+markers = ["pendulum.pin", "ground.pin"]
+rotation_coordinates = true
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, -9.81, 0.0]
+bodies = ["pendulum"]

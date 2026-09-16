@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: >-
+  If you use Practical Mechanical Simulation, please cite the software release
+  and, when available, the accompanying methods paper.
+title: Practical Mechanical Simulation
+type: software
+authors:
+  - family-names: Wielenga
+    given-names: Thomas
+version: 0.1.0
+date-released: 2026-09-16
+license: MIT
+repository-code: https://github.com/tjwielenga/PracticalMechanicalSimulation
+url: https://github.com/tjwielenga/PracticalMechanicalSimulation

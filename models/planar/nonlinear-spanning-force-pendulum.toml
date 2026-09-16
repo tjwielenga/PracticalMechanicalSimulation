@@ -1,0 +1,80 @@
+[model]
+name = "nonlinear_spanning_force_pendulum"
+title = "Pendulum with a nonlinear spanning force"
+dimension = "planar"
+
+[parameters]
+linear_stiffness = 20.0
+cubic_stiffness = 10.0
+damping = 0.5
+free_length = 0.5
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 3.0
+output_samples = 301
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[graphics.colors]
+pendulum_color = "steelblue"
+ground_color = "dimgray"
+
+[ground]
+type = "ground"
+
+[ground.graphics]
+color = "ground_color"
+
+[ground.pin]
+type = "marker"
+
+[ground.spring_anchor]
+type = "marker"
+position = [0.8, -0.2]
+
+[pendulum]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.08333333333333333
+position = [0.0, -0.5]
+
+[pendulum.graphics]
+show_default = false
+color = "pendulum_color"
+
+[pendulum.graphics.link]
+shape = "cylinder"
+markers = ["pendulum.pin", "pendulum.tip"]
+radius = 0.04
+
+[pendulum.pin]
+type = "marker"
+position = [0.0, 0.5]
+
+[pendulum.tip]
+type = "marker"
+position = [0.0, -0.5]
+
+[pin]
+type = "revolute"
+markers = ["pendulum.pin", "ground.pin"]
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, -9.81]
+bodies = ["pendulum"]
+
+[spring]
+type = "spanning_force"
+markers = ["pendulum.tip", "ground.spring_anchor"]
+expression = "-linear_stiffness*(spring.length-free_length)-cubic_stiffness*(spring.length-free_length)^3-damping*spring.length_rate"

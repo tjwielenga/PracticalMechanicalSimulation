@@ -1,0 +1,64 @@
+[model]
+name = "bushing_supported_body"
+title = "Spatial body supported by a six-component bushing"
+dimension = "spatial"
+
+[analysis]
+mode = "dynamic"
+initialization = "static_equilibrium"
+
+[simulation]
+start_time = 0.0
+end_time = 4.0
+output_samples = 401
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.mount]
+type = "marker"
+
+[ground.mount.graphics]
+shape = "xy_frame"
+axis_length = 0.30
+plane_size = 0.14
+plane_color = "gray65"
+opacity = 0.18
+label = "bushing frame"
+
+[body]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.012, 0.085, 0.090]
+position = [0.5, 0.0, 0.0]
+velocity = [0.0, 0.40, 0.0]
+angular_velocity = [0.35, 0.0, 0.20]
+
+[body.graphics]
+shape = "box"
+size = [1.0, 0.16, 0.12]
+color = "steelblue"
+
+[body.mount]
+type = "marker"
+position = [-0.5, 0.0, 0.0]
+
+[support]
+type = "bushing"
+markers = ["body.mount", "ground.mount"]
+translational_stiffness = [600.0, 600.0, 900.0]
+rotational_stiffness = [30.0, 45.0, 30.0]
+damping_time_scale = 0.04
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, 0.0, -9.81]
+bodies = ["body"]

@@ -1,0 +1,71 @@
+[model]
+name = "constant_speed_revolute_crank"
+title = "Spatial constant-speed revolute crank"
+dimension = "spatial"
+
+[parameters]
+speed = 6.283185307179586
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 1.0
+output_samples = 201
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.pin]
+type = "marker"
+
+[ground.pin.graphics]
+shape = "xy_frame"
+axis_length = 0.32
+plane_size = 0.14
+plane_color = "gray65"
+label = "drive axis"
+
+[crank]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.0011, 0.0839, 0.0839]
+position = [0.5, 0.0, 0.0]
+
+[crank.graphics]
+shape = "box"
+size = [1.0, 0.08, 0.08]
+color = "steelblue"
+
+[crank.pin]
+type = "marker"
+position = [-0.5, 0.0, 0.0]
+
+[crank.tip]
+type = "marker"
+position = [0.5, 0.0, 0.0]
+
+[pin]
+type = "revolute"
+markers = ["crank.pin", "ground.pin"]
+
+[drive]
+type = "rotational_motion"
+joint = "pin"
+function = "constant_speed"
+initial_angle = "0 deg"
+angular_velocity = "speed"
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, -9.81, 0.0]
+bodies = ["crank"]

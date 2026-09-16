@@ -1,0 +1,73 @@
+[model]
+name = "fixed_joint_rotating_assembly"
+title = "Rotating assembly joined by revolute and perp primitives"
+dimension = "planar"
+
+[parameters]
+drive_speed = 1.2566370614359172
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 5.0
+output_samples = 301
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[ground]
+type = "ground"
+
+[ground.origin]
+type = "marker"
+
+[carrier]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.08333333333333333
+position = [0.5, 0.0]
+
+[carrier.pin]
+type = "marker"
+position = [-0.5, 0.0]
+
+[carrier.tip]
+type = "marker"
+position = [0.5, 0.0]
+
+[extension]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.08333333333333333
+position = [1.5, 0.0]
+
+[extension.base]
+type = "marker"
+position = [-0.5, 0.0]
+
+[extension.tip]
+type = "marker"
+position = [0.5, 0.0]
+
+[ground_pin]
+type = "revolute"
+markers = ["carrier.pin", "ground.origin"]
+
+[rigid_connection]
+type = "fixed"
+markers = ["carrier.tip", "extension.base"]
+
+[drive]
+type = "rotational_motion"
+markers = ["carrier.pin", "ground.origin"]
+function = "constant_speed"
+initial_angle = 0.0
+angular_velocity = "drive_speed"
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, -9.81]
+bodies = ["carrier", "extension"]

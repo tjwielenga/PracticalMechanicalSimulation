@@ -1,0 +1,63 @@
+[model]
+name = "spanning_spring_body"
+title = "Spatial body on a spanning spring-damper"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 4.0
+output_samples = 401
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.anchor]
+type = "marker"
+
+[ground.anchor.graphics]
+shape = "xy_frame"
+axis_length = 0.35
+plane_size = 0.16
+plane_color = "gray70"
+opacity = 0.18
+label = "spring anchor"
+
+[body]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.025, 0.035, 0.045]
+position = [0.8, 0.35, -0.55]
+velocity = [0.0, 0.45, 0.0]
+orientation = ["20 deg", 0.0, 1.0, 0.0]
+
+[body.graphics]
+shape = "box"
+size = [0.45, 0.25, 0.20]
+color = "steelblue"
+
+[body.spring_point]
+type = "marker"
+position = [-0.16, 0.08, 0.05]
+
+[spring]
+type = "spanning_force"
+markers = ["body.spring_point", "ground.anchor"]
+stiffness = 30.0
+damping = 1.0
+free_length = 0.65
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, 0.0, -9.81]
+bodies = ["body"]

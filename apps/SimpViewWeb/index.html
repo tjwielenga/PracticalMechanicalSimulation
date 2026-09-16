@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%23346f9f'/><path d='M14 18h36v9H23v7h24v9H23v7h27v9H14z' fill='white'/></svg>" />
+    <title>SimpView</title>
+  </head>
+  <body>
+    <main id="app">
+      <header class="toolbar">
+        <button id="open-button" class="primary">Open</button>
+        <input id="file-input" type="file"
+          accept=".simp,.toml,.lua" hidden />
+        <div class="file-identity">
+          <strong id="document-title">SimpView</strong>
+          <span id="file-name">Open a viewer document to begin</span>
+        </div>
+        <label id="choice-control" class="select-control" hidden>
+          <span id="choice-name">Result</span>
+          <select id="choice-select"></select>
+        </label>
+        <button id="fit-button" disabled>Fit view</button>
+      </header>
+
+      <section id="run-toolbar" class="run-toolbar" hidden>
+        <label>
+          <span>Analysis</span>
+          <select id="analysis-select">
+            <option value="initial_conditions">Initial conditions</option>
+            <option value="static">Static equilibrium</option>
+            <option value="dynamic">Dynamic simulation</option>
+            <option value="modal">Modal analysis</option>
+          </select>
+        </label>
+        <label>
+          <span>End time</span>
+          <input id="end-time-input" type="number" step="any" />
+        </label>
+        <label>
+          <span>Frames/s</span>
+          <input id="frame-rate-input" type="number" min="1" max="240"
+            step="1" value="60" />
+        </label>
+        <button id="run-button" class="primary">Calculate ICs</button>
+        <button id="download-button" hidden>Save result</button>
+        <output id="run-status">Ready</output>
+      </section>
+
+      <section class="workspace">
+        <aside id="graphics-control" class="graphics-panel"
+          aria-label="Graphics visibility and scale">
+          <h2>Graphics</h2>
+          <div class="graphics-scale-control">
+            <strong class="graphics-selected-name">All graphics</strong>
+            <input class="graphics-scale-slider" aria-label="Selected graphics scale"
+              type="range" min="-3" max="3" step="0.05" value="0" disabled />
+            <div class="graphics-scale-values">
+              <span>Local <output class="graphics-local-scale">1×</output></span>
+              <span>Effective <output class="graphics-effective-scale">1×</output></span>
+            </div>
+            <div class="graphics-reset-buttons">
+              <button type="button" class="graphics-reset" disabled>Reset</button>
+              <button type="button" class="graphics-reset-all" disabled>Reset all</button>
+            </div>
+          </div>
+          <div class="graphics-tree" role="tree"></div>
+        </aside>
+
+        <div id="scene-panel">
+          <canvas id="scene-canvas"></canvas>
+          <div id="drop-message">
+            <strong>Open a SimpView result or model</strong>
+            <span>or drop it anywhere in this window</span>
+          </div>
+        </div>
+
+        <section class="plot-panel">
+          <div class="plot-toolbar">
+            <div id="x-signal-browser" class="signal-browser">
+              <span class="axis-name">X</span>
+              <button type="button" class="signal-browser-button"
+                aria-haspopup="tree" aria-expanded="false" disabled>time (s)</button>
+              <div class="signal-browser-popup" hidden>
+                <input class="signal-browser-search" type="search"
+                  placeholder="Find an X variable" aria-label="Find an X variable" />
+                <div class="signal-tree" role="tree"></div>
+              </div>
+            </div>
+            <div id="y-signal-browser" class="signal-browser">
+              <span class="axis-name">Y</span>
+              <button type="button" class="signal-browser-button"
+                aria-haspopup="tree" aria-expanded="false" disabled>Select variable</button>
+              <div class="signal-browser-popup" hidden>
+                <input class="signal-browser-search" type="search"
+                  placeholder="Find a Y variable" aria-label="Find a Y variable" />
+                <div class="signal-tree" role="tree"></div>
+              </div>
+            </div>
+            <output id="sample-readout">No result loaded</output>
+          </div>
+          <div class="plot-canvas-container">
+            <canvas id="plot-canvas"></canvas>
+          </div>
+        </section>
+      </section>
+
+      <footer class="transport">
+        <button id="play-button" disabled>Play</button>
+        <label id="mode-scale-control" class="mode-scale-control" hidden>
+          <span>Mode scale</span>
+          <input id="mode-scale-input" aria-label="Mode amplitude scale"
+            type="range" min="-3" max="3" step="0.02" value="0" />
+          <output id="mode-scale-readout">1×</output>
+          <button id="mode-scale-reset" type="button">Reset</button>
+        </label>
+        <input id="time-slider" aria-label="Animation position" type="range"
+          min="0" max="0" value="0" disabled />
+        <output id="time-readout">0.000 s</output>
+      </footer>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

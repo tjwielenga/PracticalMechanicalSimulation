@@ -1,0 +1,56 @@
+[model]
+name = "spanning_spring_pendulum"
+title = "Pendulum with a spanning spring-damper"
+dimension = "planar"
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 3.0
+output_samples = 301
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[ground]
+type = "ground"
+
+[ground.pin]
+type = "marker"
+
+[ground.spring_anchor]
+type = "marker"
+position = [0.8, -0.2]
+
+[pendulum]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.08333333333333333
+position = [0.0, -0.5]
+
+[pendulum.pin]
+type = "marker"
+position = [0.0, 0.5]
+
+[pendulum.tip]
+type = "marker"
+position = [0.0, -0.5]
+
+[pin]
+type = "revolute"
+markers = ["pendulum.pin", "ground.pin"]
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, -9.81]
+bodies = ["pendulum"]
+
+[spring]
+type = "spanning_force"
+markers = ["pendulum.tip", "ground.spring_anchor"]
+stiffness = 20.0
+damping = 0.5
+free_length = 0.5

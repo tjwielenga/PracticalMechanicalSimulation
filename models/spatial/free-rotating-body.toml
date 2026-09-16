@@ -1,0 +1,56 @@
+[model]
+name = "free_rotating_body"
+title = "Free rotating spatial body"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 1.5
+output_samples = 301
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.origin]
+type = "marker"
+
+[ground.origin.graphics]
+shape = "xy_frame"
+axis_length = 0.6
+plane_size = 0.27
+plane_color = "gray65"
+label = "ground.origin"
+
+[body]
+type = "rigid_body"
+mass = 2.0
+inertia = [0.08, 0.12, 0.16]
+position = [0.0, 0.0, 0.0]
+velocity = [0.8, 0.2, 4.0]
+angular_velocity = [0.0, 0.0, 4.0]
+orientation = [0.5235987755982988, 0.0, 0.0, 1.0]
+
+[body.graphics]
+shape = "box"
+size = [0.8, 0.4, 0.2]
+color = "steelblue"
+
+[body.reference]
+type = "marker"
+position = [0.4, 0.0, 0.0]
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, 0.0, -9.81]
+bodies = ["body"]

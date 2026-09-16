@@ -1,0 +1,54 @@
+[model]
+name = "bushing_supported_body"
+title = "Planar body supported by a bushing"
+dimension = "planar"
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 3.0
+output_samples = 301
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[ground]
+type = "ground"
+
+[ground.mount]
+type = "marker"
+
+[body]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.020833333333333332
+position = [0.0, -1.0]
+orientation = 0.2
+
+[body.left]
+type = "marker"
+position = [-0.25, 0.0]
+
+[body.mount]
+type = "marker"
+
+[body.right]
+type = "marker"
+position = [0.25, 0.0]
+
+[support]
+type = "bushing"
+markers = ["body.mount", "ground.mount"]
+translational_stiffness = [100.0, 100.0]
+rotational_stiffness = 20.0
+damping_time_scale = 0.1
+free_position = [0.0, -1.0]
+free_angle = 0.0
+
+[gravity]
+type = "gravity"
+bodies = ["body"]
+acceleration = [0.0, -9.81]

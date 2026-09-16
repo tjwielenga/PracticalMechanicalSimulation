@@ -1,0 +1,133 @@
+[model]
+name = "bevel_gear_pair"
+title = "Right-angle ideal gear pair"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[state_selection]
+method = "preferred"
+preferred_velocities = ["gear1_joint.omega"]
+allow_fallback = true
+
+[simulation]
+start_time = 0.0
+end_time = 8.0
+output_samples = 1601
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.05
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.apex]
+type = "marker"
+
+[ground.apex.graphics]
+shape = "xy_frame"
+axis_length = 0.32
+plane_size = 0.14
+plane_color = "gray65"
+label = "common apex"
+
+[ground.gear1_axis]
+type = "marker"
+
+[ground.gear2_axis]
+type = "marker"
+orientation = ["90 deg", 0.0, 1.0, 0.0]
+
+[ground.contact]
+type = "marker"
+position = [0.4, 0.0, 0.2]
+orientation = ["-90 deg", 1.0, 0.0, 0.0]
+
+[ground.contact.graphics]
+shape = "xy_frame"
+axis_length = 0.24
+plane_size = 0.10
+plane_color = "gray65"
+label = "contact: z is force direction"
+
+[gear1]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.02, 0.02, 0.02]
+position = [0.0, 0.0, 0.2]
+
+[gear1.graphics]
+shape = "gear"
+marker = "gear1.pitch"
+pitch_radius = 0.4
+width = 0.06
+cone_height = 0.2
+color = "steelblue"
+
+[gear1.pitch]
+type = "marker"
+
+[gear1.axis]
+type = "marker"
+position = [0.0, 0.0, -0.2]
+
+[gear1.indicator]
+type = "marker"
+position = [0.34, 0.0, 0.0]
+
+[gear2]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.02, 0.02, 0.02]
+position = [0.4, 0.0, 0.0]
+orientation = ["90 deg", 0.0, 1.0, 0.0]
+
+[gear2.graphics]
+shape = "gear"
+marker = "gear2.pitch"
+pitch_radius = 0.2
+width = 0.06
+cone_height = 0.4
+color = "darkorange"
+
+[gear2.pitch]
+type = "marker"
+
+[gear2.axis]
+type = "marker"
+position = [0.0, 0.0, -0.4]
+
+[gear2.indicator]
+type = "marker"
+position = [-0.17, 0.0, 0.0]
+
+[gear1_joint]
+type = "revolute"
+markers = ["gear1.axis", "ground.gear1_axis"]
+
+[gear2_joint]
+type = "revolute"
+markers = ["gear2.axis", "ground.gear2_axis"]
+
+[contact]
+type = "gear_pair"
+joints = ["gear1_joint", "gear2_joint"]
+contact_marker = "ground.contact"
+phase = "initial"
+
+[drive]
+type = "applied_torque"
+joint = "gear1_joint"
+expression = "0.05"
+
+[resistance]
+type = "applied_torque"
+joint = "gear2_joint"
+stiffness = 0.0
+damping = 0.02

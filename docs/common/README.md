@@ -1,0 +1,24 @@
+# Common User Information
+
+This section is for user-facing behavior shared by the planar and spatial
+modelers.
+
+The `.simp` result format identifies the model dimension inside the file. The
+same viewing, CSV-export, and model-extraction workflow therefore serves both
+modelers. Its detailed current schema is in
+[Simulation Result Files](../../architecture/common/simulation-result-files.md).
+
+Current command wrappers are:
+
+```text
+bin/simpview-web
+bin/export_results.jl
+bin/extract_model.jl
+```
+
+The [Result Viewer](result-viewer.md) documents animation navigation, load
+visibility, result and health selection, angle display, and time-history or
+variable-versus-variable plots.
+
+Dimension-specific model input and analysis instructions remain in the
+[planar](../planar/README.md) and [spatial](../spatial/README.md) guides.

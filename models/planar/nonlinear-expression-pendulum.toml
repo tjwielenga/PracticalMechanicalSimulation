@@ -1,0 +1,93 @@
+[model]
+name = "nonlinear_expression_pendulum"
+title = "Pendulum with a nonlinear applied torque"
+dimension = "planar"
+
+[parameters]
+linear_stiffness = 3.0
+cubic_stiffness = 4.0
+damping = 0.3
+free_angle = 0.0
+
+[analysis]
+mode = "dynamic"
+
+[state_selection]
+method = "preferred"
+preferred_velocities = ["pin.omega"]
+allow_fallback = false
+
+[simulation]
+start_time = 0.0
+end_time = 5.0
+output_samples = 301
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[graphics.colors]
+pendulum_color = "steelblue"
+ground_color = "dimgray"
+torque_color = "dodgerblue3"
+reaction_color = "darkorange2"
+
+[graphics.loads]
+show_applied_loads = true
+show_reactions = true
+show_ground_loads = false
+show_torques = true
+applied_color = "torque_color"
+reaction_color = "reaction_color"
+
+[ground]
+type = "ground"
+
+[ground.graphics]
+color = "ground_color"
+
+[ground.origin]
+type = "marker"
+
+[pendulum]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.08333333333333333
+position = [0.3535533905932738, -0.3535533905932738]
+orientation = 0.7853981633974483
+
+[pendulum.graphics]
+show_default = false
+color = "pendulum_color"
+
+[pendulum.graphics.link]
+shape = "cylinder"
+markers = ["pendulum.pin", "pendulum.tip"]
+radius = 0.04
+
+[pendulum.pin]
+type = "marker"
+position = [0.0, 0.5]
+
+[pendulum.tip]
+type = "marker"
+position = [0.0, -0.5]
+
+[pin]
+type = "revolute"
+markers = ["pendulum.pin", "ground.origin"]
+rotation_coordinates = true
+
+[nonlinear_spring]
+type = "applied_torque"
+markers = ["pendulum.pin", "ground.origin"]
+expression = "-linear_stiffness*(pin.theta-free_angle)-cubic_stiffness*(pin.theta-free_angle)^3-damping*pin.omega"
+
+[gravity]
+type = "gravity"
+bodies = ["pendulum"]
+acceleration = [0.0, -9.81]

@@ -1,0 +1,199 @@
+[model]
+name = "three_pulley_belt"
+title = "Spatial three-pulley belt drive"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[state_selection]
+method = "preferred"
+preferred_velocities = ["driver_joint.omega", "driven_joint.omega", "idler_joint.omega"]
+allow_fallback = true
+
+[simulation]
+start_time = 0.0
+end_time = 2.0
+output_samples = 401
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.driver_center]
+type = "marker"
+position = [-1.0, 0.3, 0.0]
+
+[ground.driven_center]
+type = "marker"
+position = [1.0, 0.3, 0.0]
+
+[ground.idler_center]
+type = "marker"
+position = [0.0, -0.8, 0.0]
+
+[ground.driver_upper_hint]
+type = "marker"
+position = [-1.0, 0.7, 0.0]
+[ground.driver_upper_hint.graphics]
+visible = false
+
+[ground.driven_upper_hint]
+type = "marker"
+position = [1.0, 0.75, 0.0]
+[ground.driven_upper_hint.graphics]
+visible = false
+
+[ground.driven_lower_hint]
+type = "marker"
+position = [1.35, 0.1, 0.0]
+[ground.driven_lower_hint.graphics]
+visible = false
+
+[ground.idler_right_hint]
+type = "marker"
+position = [0.25, -0.65, 0.0]
+[ground.idler_right_hint.graphics]
+visible = false
+
+[ground.idler_left_hint]
+type = "marker"
+position = [-0.25, -0.65, 0.0]
+[ground.idler_left_hint.graphics]
+visible = false
+
+[ground.driver_lower_hint]
+type = "marker"
+position = [-1.3, 0.1, 0.0]
+[ground.driver_lower_hint.graphics]
+visible = false
+
+[ground.origin]
+type = "marker"
+
+[ground.origin.graphics]
+shape = "xy_frame"
+axis_length = 0.3
+plane_size = 0.12
+plane_color = "gray70"
+label = "belt plane"
+
+[driver]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.04, 0.04, 0.08]
+position = [-1.0, 0.3, 0.0]
+
+[driver.graphics]
+shape = "pulley"
+marker = "driver.center"
+pitch_radius = 0.4
+width = 0.12
+color = "steelblue"
+
+[driver.center]
+type = "marker"
+
+[driven]
+type = "rigid_body"
+mass = 1.2
+inertia = [0.05, 0.05, 0.10]
+position = [1.0, 0.3, 0.0]
+
+[driven.graphics]
+shape = "pulley"
+marker = "driven.center"
+pitch_radius = 0.45
+width = 0.12
+color = "darkorange"
+
+[driven.center]
+type = "marker"
+
+[idler]
+type = "rigid_body"
+mass = 0.5
+inertia = [0.015, 0.015, 0.03]
+position = [0.0, -0.8, 0.0]
+
+[idler.graphics]
+shape = "pulley"
+marker = "idler.center"
+pitch_radius = 0.25
+width = 0.10
+color = "seagreen"
+
+[idler.center]
+type = "marker"
+
+[driver_joint]
+type = "revolute"
+markers = ["driver.center", "ground.driver_center"]
+
+[driven_joint]
+type = "revolute"
+markers = ["driven.center", "ground.driven_center"]
+
+[idler_joint]
+type = "revolute"
+markers = ["idler.center", "ground.idler_center"]
+
+[driver_pulley]
+type = "pulley"
+body = "driver"
+joint = "driver_joint"
+pitch_radius = 0.4
+
+[driven_pulley]
+type = "pulley"
+body = "driven"
+joint = "driven_joint"
+pitch_radius = 0.45
+
+[idler_pulley]
+type = "pulley"
+body = "idler"
+joint = "idler_joint"
+pitch_radius = 0.25
+
+[belt]
+type = "belt"
+spans = ["belt.driver_to_driven", "belt.driven_to_idler", "belt.idler_to_driver"]
+stiffness = 50000.0
+damping_time_scale = 0.001
+initial_tension = 40.0
+
+[belt.driver_to_driven]
+type = "belt_span"
+pulleys = ["driver_pulley", "driven_pulley"]
+near_points = ["ground.driver_upper_hint", "ground.driven_upper_hint"]
+
+[belt.driven_to_idler]
+type = "belt_span"
+pulleys = ["driven_pulley", "idler_pulley"]
+near_points = ["ground.driven_lower_hint", "ground.idler_right_hint"]
+
+[belt.idler_to_driver]
+type = "belt_span"
+pulleys = ["idler_pulley", "driver_pulley"]
+near_points = ["ground.idler_left_hint", "ground.driver_lower_hint"]
+
+[drive]
+type = "rotational_motion"
+joint = "driver_joint"
+function = "constant_speed"
+initial_angle = "0 deg"
+angular_velocity = 2.0
+
+[resistance]
+type = "applied_torque"
+joint = "driven_joint"
+stiffness = 0.0
+damping = 0.03

@@ -1,0 +1,136 @@
+[model]
+name = "modal_three_link_pendulum"
+title = "Modes of a three-link spatial pendulum"
+dimension = "spatial"
+
+[analysis]
+mode = "modal"
+initialization = "static_equilibrium"
+modes = 3
+frequency_shift_hz = 0.0
+
+[state_selection]
+method = "preferred"
+preferred_velocities = ["pin1.omega", "pin2.omega", "pin3.omega"]
+allow_fallback = false
+
+[simulation]
+start_time = 0.0
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.pin]
+type = "marker"
+
+[ground.pin.graphics]
+shape = "xy_frame"
+axis_length = 0.35
+plane_size = 0.16
+plane_color = "gray65"
+label = "support"
+
+[link1]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.001, 0.08333333333333333, 0.08333333333333333]
+position = [0.0, -0.5, 0.0]
+orientation = ["-90 deg", 0.0, 0.0, 1.0]
+
+[link1.graphics]
+shape = "box"
+size = [1.0, 0.08, 0.08]
+color = "steelblue"
+
+[link1.top]
+type = "marker"
+position = [-0.5, 0.0, 0.0]
+
+[link1.bottom]
+type = "marker"
+position = [0.5, 0.0, 0.0]
+
+[link2]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.001, 0.08333333333333333, 0.08333333333333333]
+position = [0.0, -1.5, 0.0]
+orientation = ["-90 deg", 0.0, 0.0, 1.0]
+
+[link2.graphics]
+shape = "box"
+size = [1.0, 0.08, 0.08]
+color = "darkorange"
+
+[link2.top]
+type = "marker"
+position = [-0.5, 0.0, 0.0]
+
+[link2.bottom]
+type = "marker"
+position = [0.5, 0.0, 0.0]
+
+[link3]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.001, 0.08333333333333333, 0.08333333333333333]
+position = [0.0, -2.5, 0.0]
+orientation = ["-90 deg", 0.0, 0.0, 1.0]
+
+[link3.graphics]
+shape = "box"
+size = [1.0, 0.08, 0.08]
+color = "seagreen"
+
+[link3.top]
+type = "marker"
+position = [-0.5, 0.0, 0.0]
+
+[link3.bottom]
+type = "marker"
+position = [0.5, 0.0, 0.0]
+
+[pin1]
+type = "revolute"
+markers = ["link1.top", "ground.pin"]
+rotation_coordinates = true
+
+[pin2]
+type = "revolute"
+markers = ["link2.top", "link1.bottom"]
+rotation_coordinates = true
+
+[pin3]
+type = "revolute"
+markers = ["link3.top", "link2.bottom"]
+rotation_coordinates = true
+
+[spring1]
+type = "applied_torque"
+joint = "pin1"
+stiffness = 8.0
+damping_time_scale = 0.02
+free_angle = "initial"
+
+[spring2]
+type = "applied_torque"
+joint = "pin2"
+stiffness = 6.0
+damping_time_scale = 0.02
+free_angle = "initial"
+
+[spring3]
+type = "applied_torque"
+joint = "pin3"
+stiffness = 4.0
+damping_time_scale = 0.02
+free_angle = "initial"
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, -9.81, 0.0]
+bodies = ["link1", "link2", "link3"]

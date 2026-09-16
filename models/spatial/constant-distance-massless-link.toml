@@ -1,0 +1,68 @@
+[model]
+name = "constant_distance_massless_link"
+title = "Spatial pendulum on a massless link"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[state_selection]
+method = "preferred"
+preferred_velocities = [
+    "body.V_x", "body.V_y", "body.omega_x", "body.omega_y", "body.omega_z",
+]
+allow_fallback = false
+
+[simulation]
+start_time = 0.0
+end_time = 4.0
+output_samples = 401
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.anchor]
+type = "marker"
+
+[ground.anchor.graphics]
+shape = "xy_frame"
+axis_length = 0.3
+plane_size = 0.14
+plane_color = "gray70"
+opacity = 0.18
+label = "link anchor"
+
+[body]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.025, 0.035, 0.045]
+position = [0.8, 0.0, -0.6]
+velocity = [0.0, 0.6, 0.0]
+angular_velocity = [0.2, 0.4, 0.1]
+orientation = ["20 deg", 0.0, 1.0, 0.0]
+
+[body.graphics]
+shape = "box"
+size = [0.35, 0.22, 0.18]
+color = "steelblue"
+
+[body.link]
+type = "marker"
+
+[link]
+type = "spanning_motion"
+markers = ["body.link", "ground.anchor"]
+distance = 1.0
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, 0.0, -9.81]
+bodies = ["body"]

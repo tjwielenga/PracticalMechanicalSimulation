@@ -1,0 +1,52 @@
+#!/usr/bin/env -S julia --project=@script/..
+
+Base.exit_on_sigint(false)
+
+using PracticalMechanicalSimulation
+
+options = PracticalMechanicalSimulation.CommandLine.parse_command_line(ARGS)
+!isnothing(options.output_path) &&
+    include(joinpath(@__DIR__, "write_result_graphics.jl"))
+
+function add_native_graphics(path)
+    try
+        reconstructed = reconstructed_viewer_results(path)
+        write_graphics(path, reconstructed.results;
+            labels = reconstructed.labels,
+            choice_name = reconstructed.choice_name)
+    catch error
+        @warn("the result was saved, but native graphics could not be prepared",
+            exception = (error, catch_backtrace()))
+    end
+end
+
+function stopped_result(path)
+    isfile(path) || return false
+    try
+        read_result(path).status in (:failed, :interrupted)
+    catch
+        false
+    end
+end
+
+exit_code = try
+    planar_model_main()
+catch error
+    saved_result = !isnothing(options.output_path) &&
+        stopped_result(options.output_path)
+    saved_result && add_native_graphics(options.output_path)
+    if error isa InterruptException
+        if saved_result
+            println(stderr, "simulation interrupted; result finalized at ",
+                options.output_path)
+        else
+            println(stderr, "simulation interrupted")
+        end
+        130
+    else
+        rethrow()
+    end
+end
+exit_code == 0 && !isnothing(options.output_path) &&
+    add_native_graphics(options.output_path)
+exit(exit_code)

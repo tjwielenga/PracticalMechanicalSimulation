@@ -1,0 +1,99 @@
+[model]
+name = "torque_driven_four_bar"
+title = "Torque-driven planar four-bar"
+dimension = "planar"
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 1.0
+output_samples = 201
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[ground]
+type = "ground"
+
+[ground.left]
+type = "marker"
+position = [0.0, 0.0]
+
+[ground.right]
+type = "marker"
+position = [1.5, 0.0]
+
+[crank]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.03
+position = [0.2598076211353316, 0.14999999999999997]
+orientation = 0.5235987755982987
+angular_velocity = 0.0
+
+[crank.ground_end]
+type = "marker"
+position = [-0.3, 0.0]
+
+[crank.coupler_end]
+type = "marker"
+position = [0.3, 0.0]
+
+[coupler]
+type = "rigid_body"
+mass = 1.5
+inertia = 0.24499999999999997
+position = [1.134713287347731, 0.634147265352224]
+orientation = 0.4976401429825486
+
+[coupler.crank_end]
+type = "marker"
+position = [-0.7, 0.0]
+
+[coupler.rocker_end]
+type = "marker"
+position = [0.7, 0.0]
+
+[rocker]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.08333333333333333
+position = [1.6249056662123993, 0.48414726535222397]
+orientation = -1.823281731803413
+
+[rocker.coupler_end]
+type = "marker"
+position = [-0.5, 0.0]
+
+[rocker.ground_end]
+type = "marker"
+position = [0.5, 0.0]
+
+[ground_crank]
+type = "revolute"
+markers = ["crank.ground_end", "ground.left"]
+
+[crank_coupler]
+type = "revolute"
+markers = ["crank.coupler_end", "coupler.crank_end"]
+
+[coupler_rocker]
+type = "revolute"
+markers = ["coupler.rocker_end", "rocker.coupler_end"]
+
+[rocker_ground]
+type = "revolute"
+markers = ["rocker.ground_end", "ground.right"]
+
+[gravity]
+type = "gravity"
+bodies = ["crank", "coupler", "rocker"]
+acceleration = [0.0, -9.81]
+
+[drive_torque]
+type = "applied_torque"
+markers = ["crank.ground_end", "ground.left"]
+torque = 10.0

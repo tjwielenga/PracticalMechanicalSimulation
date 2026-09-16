@@ -1,0 +1,106 @@
+[model]
+name = "translational_coordinate_coupler"
+title = "Two sliders joined by a coordinate coupler"
+dimension = "planar"
+
+[analysis]
+mode = "automatic"
+
+[state_selection]
+method = "preferred"
+preferred_velocities = ["upper_distance.velocity"]
+allow_fallback = false
+
+[simulation]
+start_time = 0.0
+end_time = 2.0
+output_samples = 201
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.upper_guide]
+type = "marker"
+position = [0.0, 0.4]
+
+[ground.lower_guide]
+type = "marker"
+position = [0.0, -0.4]
+
+[ground.upper_axis]
+type = "marker"
+position = [0.0, 0.4]
+orientation = -1.5707963267948966
+
+[ground.lower_axis]
+type = "marker"
+position = [0.0, -0.4]
+orientation = -1.5707963267948966
+
+[upper_slider]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.04
+position = [0.0, 0.4]
+
+[upper_slider.center]
+type = "marker"
+
+[upper_slider.graphics]
+show_default = false
+
+[upper_slider.graphics.block]
+shape = "box"
+marker = "upper_slider.center"
+size = [0.50, 0.20, 0.12]
+
+[lower_slider]
+type = "rigid_body"
+mass = 1.5
+inertia = 0.04
+position = [0.0, -0.4]
+
+[lower_slider.center]
+type = "marker"
+
+[lower_slider.graphics]
+show_default = false
+
+[lower_slider.graphics.block]
+shape = "box"
+marker = "lower_slider.center"
+size = [0.50, 0.20, 0.12]
+
+[upper_joint]
+type = "translational"
+markers = ["upper_slider.center", "ground.upper_guide"]
+
+[lower_joint]
+type = "translational"
+markers = ["lower_slider.center", "ground.lower_guide"]
+
+[upper_distance]
+type = "distance_coordinate"
+markers = ["upper_slider.center", "ground.upper_axis"]
+
+[lower_distance]
+type = "distance_coordinate"
+markers = ["lower_slider.center", "ground.lower_axis"]
+
+[slider_coupler]
+type = "coupler"
+coordinates = ["upper_distance.distance", "lower_distance.distance"]
+coefficients = [1.0, 1.0]
+offset = "initial"
+
+[push]
+type = "applied_force"
+markers = ["upper_slider.center", "ground.upper_axis"]
+force = 1.0

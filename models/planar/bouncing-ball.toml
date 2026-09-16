@@ -1,0 +1,52 @@
+[model]
+name = "bouncing_ball"
+title = "Bouncing ball with compliant plane contact"
+dimension = "planar"
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 1.5
+output_samples = 301
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.002
+
+[ground]
+type = "ground"
+
+[ground.plane]
+type = "marker"
+position = [0.0, 0.0]
+
+[ball]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.005
+position = [0.0, 1.0]
+
+[ball.left]
+type = "marker"
+position = [-0.1, 0.0]
+
+[ball.right]
+type = "marker"
+position = [0.1, 0.0]
+
+[ball.center]
+type = "marker"
+
+[floor_contact]
+type = "plane_contact"
+markers = ["ball.center", "ground.plane"]
+radius = 0.1
+stiffness = 10000.0
+damping_factor = 0.15
+
+[gravity]
+type = "gravity"
+bodies = ["ball"]
+acceleration = [0.0, -9.81]

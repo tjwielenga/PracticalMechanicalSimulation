@@ -1,0 +1,64 @@
+[model]
+name = "quasistatic_torsional_pendulum"
+title = "Spatial quasi-static torsional pendulum"
+dimension = "spatial"
+
+[parameters]
+stiffness = 8.0
+applied_rate = 4.0
+
+[analysis]
+mode = "static"
+
+[simulation]
+start_time = 0.0
+end_time = 1.0
+output_samples = 51
+absolute_tolerance = 1.0e-10
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.pin]
+type = "marker"
+
+[ground.pin.graphics]
+shape = "xy_frame"
+axis_length = 0.35
+plane_size = 0.16
+plane_color = "gray65"
+label = "revolute axis"
+
+[pendulum]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.001, 0.08333333333333333, 0.08333333333333333]
+position = [0.4330127018922193, 0.25, 0.0]
+orientation = ["30 deg", 0.0, 0.0, 1.0]
+
+[pendulum.graphics]
+shape = "box"
+size = [1.0, 0.08, 0.08]
+color = "steelblue"
+
+[pendulum.pin]
+type = "marker"
+position = [-0.5, 0.0, 0.0]
+
+[pin]
+type = "revolute"
+markers = ["pendulum.pin", "ground.pin"]
+
+[spring_and_ramp]
+type = "applied_torque"
+joint = "pin"
+expression = "-stiffness*pin.theta + applied_rate*t"
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, -9.81, 0.0]
+bodies = ["pendulum"]

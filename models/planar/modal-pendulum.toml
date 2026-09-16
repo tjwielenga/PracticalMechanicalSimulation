@@ -1,0 +1,89 @@
+[model]
+name = "modal_pendulum"
+title = "Linear modes of a torsional-spring pendulum"
+dimension = "planar"
+
+[analysis]
+mode = "modal"
+modes = 1
+frequency_shift_hz = 0.0
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[graphics.colors]
+pendulum_color = "steelblue"
+support_color = "dimgray"
+spring_color = "darkorange"
+
+[simulation]
+start_time = 0.0
+
+[ground]
+type = "ground"
+
+[ground.graphics]
+color = "support_color"
+
+[ground.graphics.base]
+shape = "box"
+marker = "ground.origin"
+size = [0.18, 0.12, 0.08]
+
+[ground.origin]
+type = "marker"
+
+[pendulum]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.08333333333333333
+position = [0.0, -0.5]
+orientation = 0.0
+
+[pendulum.graphics]
+show_default = false
+color = "pendulum_color"
+
+[pendulum.graphics.link]
+shape = "cylinder"
+markers = ["pendulum.pin", "pendulum.tip"]
+radius = 0.045
+
+[pendulum.graphics.tip_mass]
+shape = "sphere"
+marker = "pendulum.tip"
+radius = 0.07
+
+[pendulum.pin]
+type = "marker"
+position = [0.0, 0.5]
+
+[pendulum.tip]
+type = "marker"
+position = [0.0, -0.5]
+
+[pin]
+type = "revolute"
+markers = ["pendulum.pin", "ground.origin"]
+rotation_coordinates = true
+
+[pin_spring]
+type = "torsional_spring_damper"
+markers = ["pendulum.pin", "ground.origin"]
+stiffness = 3.0
+damping = 0.2
+free_angle = 0.0
+
+[pin_spring.graphics]
+color = "spring_color"
+
+[gravity]
+type = "gravity"
+bodies = ["pendulum"]
+acceleration = [0.0, -9.81]
+
+[state_selection]
+method = "preferred"
+preferred_velocities = ["pin.omega"]
+allow_fallback = false

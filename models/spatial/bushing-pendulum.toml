@@ -1,0 +1,61 @@
+[model]
+name = "bushing_pendulum"
+title = "Spatial pendulum on a six-component bushing"
+dimension = "spatial"
+
+[analysis]
+mode = "dynamic"
+
+[simulation]
+start_time = 0.0
+end_time = 4.0
+output_samples = 401
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.mount]
+type = "marker"
+
+[ground.mount.graphics]
+shape = "xy_frame"
+axis_length = 0.30
+plane_size = 0.14
+plane_color = "gray65"
+opacity = 0.18
+label = "bushing frame"
+
+[pendulum]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.012, 0.085, 0.090]
+position = [0.5, 0.0, 0.0]
+
+[pendulum.graphics]
+shape = "box"
+size = [1.0, 0.16, 0.12]
+color = "steelblue"
+
+[pendulum.mount]
+type = "marker"
+position = [-0.5, 0.0, 0.0]
+
+[support]
+type = "bushing"
+markers = ["pendulum.mount", "ground.mount"]
+translational_stiffness = [6000.0, 6000.0, 9000.0]
+rotational_stiffness = [300.0, 450.0, 0.0]
+damping_time_scale = 0.04
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, -9.81, 0.0]
+bodies = ["pendulum"]

@@ -1,0 +1,112 @@
+[model]
+name = "rotational_coordinate_coupler"
+title = "Two shafts joined by a coordinate coupler"
+dimension = "planar"
+
+[analysis]
+mode = "automatic"
+
+[state_selection]
+method = "preferred"
+preferred_velocities = ["input_bearing.omega"]
+allow_fallback = false
+
+[simulation]
+start_time = 0.0
+end_time = 2.0
+output_samples = 201
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+body_palette = "colorblind"
+
+[carrier]
+type = "ground"
+
+[carrier.input]
+type = "marker"
+position = [-0.75, 0.0]
+
+[carrier.output]
+type = "marker"
+position = [0.75, 0.0]
+
+[input_shaft]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.10
+position = [-0.75, 0.0]
+
+[input_shaft.center]
+type = "marker"
+
+[input_shaft.tip]
+type = "marker"
+position = [0.45, 0.0]
+
+[input_shaft.graphics]
+show_default = false
+
+[input_shaft.graphics.arm]
+shape = "cylinder"
+markers = ["input_shaft.center", "input_shaft.tip"]
+radius = 0.05
+
+[input_shaft.graphics.hub]
+shape = "cylinder"
+marker = "input_shaft.center"
+axis = "z"
+length = 0.12
+radius = 0.12
+
+[output_shaft]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.20
+position = [0.75, 0.0]
+
+[output_shaft.center]
+type = "marker"
+
+[output_shaft.tip]
+type = "marker"
+position = [0.45, 0.0]
+
+[output_shaft.graphics]
+show_default = false
+
+[output_shaft.graphics.arm]
+shape = "cylinder"
+markers = ["output_shaft.center", "output_shaft.tip"]
+radius = 0.05
+
+[output_shaft.graphics.hub]
+shape = "cylinder"
+marker = "output_shaft.center"
+axis = "z"
+length = 0.12
+radius = 0.12
+
+[input_bearing]
+type = "revolute"
+markers = ["input_shaft.center", "carrier.input"]
+rotation_coordinates = true
+
+[output_bearing]
+type = "revolute"
+markers = ["output_shaft.center", "carrier.output"]
+rotation_coordinates = true
+
+[shaft_coupler]
+type = "coupler"
+coordinates = ["input_bearing.rotation", "output_bearing.rotation"]
+coefficients = [1.0, -2.0]
+offset = "initial"
+
+[drive_torque]
+type = "applied_torque"
+markers = ["input_shaft.center", "carrier.input"]
+torque = 1.0

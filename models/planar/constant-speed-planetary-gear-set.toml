@@ -1,0 +1,161 @@
+[model]
+name = "constant_speed_planetary_gear_set"
+title = "Fixed-ring planetary gear set on a moving carrier"
+dimension = "planar"
+
+[parameters]
+sun_speed = 1.2566370614359172
+
+[analysis]
+mode = "automatic"
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[graphics.colors]
+sun_color = "steelblue"
+planet_color = "darkorange"
+ring_color = "seagreen"
+carrier_color = "dimgray"
+reaction_load = "firebrick2"
+applied_load = "dodgerblue3"
+
+[graphics.loads]
+show_reactions = true
+show_applied_loads = true
+show_torques = true
+reaction_color = "reaction_load"
+applied_color = "applied_load"
+
+[simulation]
+start_time = 0.0
+end_time = 17.5
+output_samples = 421
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[ground]
+type = "ground"
+
+[ground.center]
+type = "marker"
+
+[sun]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.08
+
+[sun.graphics]
+color = "sun_color"
+
+[sun.center]
+type = "marker"
+
+[ring]
+type = "rigid_body"
+mass = 2.0
+inertia = 1.0
+
+[ring.graphics]
+color = "ring_color"
+
+[ring.center]
+type = "marker"
+
+[carrier]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.1633333333333333
+
+[carrier.graphics]
+show_default = false
+color = "carrier_color"
+
+[carrier.graphics.arm]
+shape = "cylinder"
+markers = ["carrier.center", "carrier.planet_bearing"]
+radius = 0.035
+
+[carrier.graphics.center_hub]
+shape = "cylinder"
+marker = "carrier.center"
+axis = "z"
+length = 0.08
+radius = 0.065
+
+[carrier.center]
+type = "marker"
+
+[carrier.sun_planet_contact]
+type = "marker"
+position = [0.4, 0.0]
+
+[carrier.planet_bearing]
+type = "marker"
+position = [0.7, 0.0]
+
+[carrier.ring_planet_contact]
+type = "marker"
+position = [1.0, 0.0]
+
+[planet]
+type = "rigid_body"
+mass = 0.8
+inertia = 0.036
+position = [0.7, 0.0]
+
+[planet.graphics]
+color = "planet_color"
+
+[planet.center]
+type = "marker"
+
+[sun_bearing]
+type = "revolute"
+markers = ["sun.center", "ground.center"]
+
+[ring_bearing]
+type = "revolute"
+markers = ["ring.center", "ground.center"]
+
+[carrier_bearing]
+type = "revolute"
+markers = ["carrier.center", "ground.center"]
+
+[planet_bearing]
+type = "revolute"
+markers = ["planet.center", "carrier.planet_bearing"]
+
+[sun_planet]
+type = "gear_pair"
+joints = ["sun_bearing", "planet_bearing"]
+contact_marker = "carrier.sun_planet_contact"
+phase = "initial"
+
+[ring_planet]
+type = "gear_pair"
+joints = ["ring_bearing", "planet_bearing"]
+contact_marker = "carrier.ring_planet_contact"
+phase = "initial"
+
+[sun_drive]
+type = "rotational_motion"
+markers = ["sun.center", "ground.center"]
+function = "constant_speed"
+initial_angle = 0.0
+angular_velocity = "sun_speed"
+
+[ring_hold]
+type = "rotational_motion"
+markers = ["ring.center", "ground.center"]
+function = "constant_speed"
+initial_angle = 0.0
+angular_velocity = 0.0
+
+[carrier_load]
+type = "applied_torque"
+markers = ["carrier.center", "ground.center"]
+torque = -5.0

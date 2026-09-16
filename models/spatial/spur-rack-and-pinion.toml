@@ -1,0 +1,102 @@
+[model]
+name = "spur_rack_and_pinion"
+title = "Spatial spur rack and pinion"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[state_selection]
+method = "preferred"
+preferred_velocities = ["pinion_joint.omega"]
+allow_fallback = false
+
+[simulation]
+start_time = 0.0
+end_time = 4.0
+output_samples = 801
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.pinion_center]
+type = "marker"
+
+# In this pitch frame, x is the pinion axis, y points toward contact,
+# and z is the rack travel direction.
+[ground.rack_guide]
+type = "marker"
+position = [0.0, -0.4, 0.0]
+orientation = ["180 deg", 0.707106781187, 0.0, 0.707106781187]
+
+[ground.rack_guide.graphics]
+shape = "xy_frame"
+axis_length = 0.28
+plane_size = 0.11
+plane_color = "gray70"
+label = "rack pitch frame"
+
+[pinion]
+type = "rigid_body"
+mass = 0.6
+inertia = [0.03, 0.03, 0.05]
+
+[pinion.graphics]
+shape = "gear"
+marker = "pinion.center"
+pitch_radius = 0.4
+width = 0.12
+color = "steelblue"
+
+[pinion.center]
+type = "marker"
+
+[pinion.indicator]
+type = "marker"
+position = [0.32, 0.0, 0.0]
+
+[rack]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.02, 0.18, 0.18]
+position = [0.0, -0.4, 0.0]
+orientation = ["180 deg", 0.707106781187, 0.0, 0.707106781187]
+
+[rack.graphics]
+shape = "box"
+size = [0.12, 0.12, 1.6]
+color = "darkorange"
+
+[rack.guide]
+type = "marker"
+
+[pinion_joint]
+type = "revolute"
+markers = ["pinion.center", "ground.pinion_center"]
+
+[rack_guide]
+type = "inline"
+markers = ["rack.guide", "ground.rack_guide"]
+
+[rack_orientation]
+type = "orient"
+markers = ["rack.guide", "ground.rack_guide"]
+
+[rack_and_pinion]
+type = "rack_and_pinion"
+joints = ["rack_guide", "pinion_joint"]
+pitch_radius = 0.4
+phase = "initial"
+
+[drive]
+type = "applied_torque"
+joint = "pinion_joint"
+expression = "0.04 - 0.015*pinion_joint.omega"

@@ -1,0 +1,107 @@
+[model]
+name = "oriented_free_body"
+title = "Orient constraint compared with a free body"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 0.8
+output_samples = 161
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.world]
+type = "marker"
+position = [-0.6, -0.4, 0.0]
+
+[ground.world.graphics]
+shape = "xy_frame"
+axis_length = 0.30
+plane_size = 0.14
+plane_color = "gray70"
+opacity = 0.16
+label = "world"
+
+[ground.reference]
+type = "marker"
+position = [-0.6, 0.25, 0.0]
+orientation = ["45 deg", 0.0, 0.0, 1.0]
+
+[ground.reference.graphics]
+shape = "xy_frame"
+axis_length = 0.30
+plane_size = 0.14
+plane_color = "goldenrod"
+opacity = 0.20
+label = "fixed orientation"
+
+[locked_body]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.025, 0.035, 0.045]
+position = [0.4, -0.30, 0.8]
+velocity = [0.5, 0.15, 0.0]
+angular_velocity = [0.7, 1.1, 1.5]
+orientation = ["10 deg", 1.0, 0.0, 0.0]
+
+[locked_body.graphics]
+shape = "box"
+size = [0.70, 0.18, 0.10]
+color = "steelblue"
+
+[locked_body.frame]
+type = "marker"
+
+[locked_body.frame.graphics]
+shape = "xy_frame"
+axis_length = 0.28
+plane_size = 0.12
+plane_color = "lightskyblue"
+opacity = 0.18
+label = "orient constrained"
+
+[free_body]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.025, 0.035, 0.045]
+position = [0.4, 0.30, 0.8]
+velocity = [0.5, 0.15, 0.0]
+angular_velocity = [0.7, 1.1, 1.5]
+orientation = ["45 deg", 0.0, 0.0, 1.0]
+
+[free_body.graphics]
+shape = "box"
+size = [0.70, 0.18, 0.10]
+color = "darkorange"
+
+[free_body.frame]
+type = "marker"
+
+[free_body.frame.graphics]
+shape = "xy_frame"
+axis_length = 0.28
+plane_size = 0.12
+plane_color = "moccasin"
+opacity = 0.18
+label = "free to tumble"
+
+[orientation_lock]
+type = "orient"
+markers = ["locked_body.frame", "ground.reference"]
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, 0.0, -9.81]
+bodies = ["locked_body", "free_body"]

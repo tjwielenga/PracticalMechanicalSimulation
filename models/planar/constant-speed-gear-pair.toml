@@ -1,0 +1,86 @@
+[model]
+name = "constant_speed_gear_pair"
+title = "External gear pair on a fixed carrier"
+dimension = "planar"
+
+[parameters]
+drive_speed = 1.2566370614359172
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 5.0
+output_samples = 301
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.005
+
+[carrier]
+type = "ground"
+
+[carrier.left_bearing]
+type = "marker"
+position = [0.0, 0.0]
+
+[carrier.contact]
+type = "marker"
+position = [0.4, 0.0]
+
+[carrier.right_bearing]
+type = "marker"
+position = [1.0, 0.0]
+
+[gear1]
+type = "rigid_body"
+mass = 1.0
+inertia = 0.08
+position = [0.0, 0.0]
+
+[gear1.center]
+type = "marker"
+
+[gear1.rim]
+type = "marker"
+position = [0.4, 0.0]
+
+[gear2]
+type = "rigid_body"
+mass = 1.5
+inertia = 0.27
+position = [1.0, 0.0]
+
+[gear2.center]
+type = "marker"
+
+[gear2.rim]
+type = "marker"
+position = [-0.6, 0.0]
+
+[left_bearing]
+type = "revolute"
+markers = ["gear1.center", "carrier.left_bearing"]
+
+[right_bearing]
+type = "revolute"
+markers = ["gear2.center", "carrier.right_bearing"]
+
+[gear_pair]
+type = "gear_pair"
+joints = ["left_bearing", "right_bearing"]
+contact_marker = "carrier.contact"
+phase = "initial"
+
+[gear2_load]
+type = "applied_torque"
+markers = ["gear2.center", "carrier.right_bearing"]
+torque = 5.0
+
+[drive]
+type = "rotational_motion"
+markers = ["gear1.center", "carrier.left_bearing"]
+function = "constant_speed"
+initial_angle = 0.0
+angular_velocity = "drive_speed"

@@ -1,0 +1,46 @@
+#!/usr/bin/env -S julia --project=@script/..
+
+using PracticalMechanicalSimulation
+
+isdefined(Main, :ViewerData) ||
+    include(joinpath(@__DIR__, "..", "src", "viewer", "ViewerData.jl"))
+isdefined(Main, :StoredResultViewer) ||
+    include(joinpath(@__DIR__, "..", "src", "viewer",
+        "StoredResultViewer.jl"))
+isdefined(Main, :PortableViewerDocument) ||
+    include(joinpath(@__DIR__, "..", "src", "viewer",
+        "PortableViewerDocument.jl"))
+
+using .StoredResultViewer
+using .PortableViewerDocument
+
+function reconstructed_viewer_results(input; mode = nothing)
+    stored = read_result(input)
+    if stored.analysis_mode == :modal && isnothing(mode)
+        mode_count = length(stored.modal_eigenvalues)
+        results = [stored_mechanism_result(input; mode = mode_number)
+            for mode_number in 1:mode_count]
+        labels = ["Mode $mode_number — " *
+            string(round(stored.modal_natural_frequencies_hz[mode_number];
+                sigdigits = 6)) * " Hz" for mode_number in 1:mode_count]
+        return (; results, labels, choice_name = "Mode")
+    end
+    selected_mode = isnothing(mode) ? 1 : mode
+    result = stored_mechanism_result(input; mode = selected_mode)
+    label = stored.analysis_mode == :modal ? "Mode $selected_mode" : "Result"
+    (; results = [result], labels = [label], choice_name = "Result")
+end
+
+function write_stored_result_graphics(input; mode = nothing)
+    reconstructed = reconstructed_viewer_results(input; mode)
+    write_graphics(input, reconstructed.results;
+        labels = reconstructed.labels,
+        choice_name = reconstructed.choice_name)
+end
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    1 <= length(ARGS) <= 2 || error(
+        "usage: write_result_graphics.jl RESULT.simp [mode]")
+    mode = length(ARGS) == 2 ? parse(Int, ARGS[2]) : nothing
+    println(write_stored_result_graphics(ARGS[1]; mode))
+end

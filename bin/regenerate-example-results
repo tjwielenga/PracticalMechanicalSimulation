@@ -1,0 +1,131 @@
+#!/usr/bin/env -S julia --project=@script/..
+
+using Dates
+using PracticalMechanicalSimulation
+
+include(joinpath(@__DIR__, "write_result_graphics.jl"))
+
+const PROJECT_DIRECTORY = normpath(joinpath(@__DIR__, ".."))
+const RESULT_DIRECTORY = joinpath(PROJECT_DIRECTORY, "results", "examples")
+const REPORT_PATH = joinpath(RESULT_DIRECTORY, "regeneration-report.txt")
+
+function model_files(directory, extension)
+    sort(filter(path -> endswith(path, extension), readdir(directory; join = true)))
+end
+
+function record_result!(report, status, model, output)
+    relative_model = relpath(model, PROJECT_DIRECTORY)
+    relative_output = relpath(output, PROJECT_DIRECTORY)
+    println(report, rpad(status, 9), relative_model, " -> ", relative_output)
+    flush(report)
+end
+
+function attach_graphics(output)
+    isfile(output) || return
+    write_stored_result_graphics(output)
+end
+
+function run_example!(report, runner, model, output; expected_incomplete = false)
+    println("Running ", relpath(model, PROJECT_DIRECTORY))
+    try
+        code = runner([model, "--output", output, "--overwrite"])
+        code == 0 || error("model command returned exit code $code")
+        attach_graphics(output)
+        record_result!(report, "PASS", model, output)
+        return :passed
+    catch exception
+        exception isa InterruptException && rethrow()
+        try
+            # Failed analyses still contain useful accepted states.
+            attach_graphics(output)
+        catch graphics_exception
+            println(stderr, "  unable to attach graphics: ",
+                sprint(showerror, graphics_exception))
+        end
+        if expected_incomplete && isfile(output) &&
+                read_result(output).status in (:failed, :interrupted)
+            println("  saved expected incomplete result: ",
+                sprint(showerror, exception))
+            record_result!(report, "PARTIAL", model, output)
+            return :partial
+        end
+        println(stderr, "  failed: ", sprint(showerror, exception))
+        record_result!(report, "FAIL", model, output)
+        return :failed
+    finally
+        GC.gc()
+    end
+end
+
+function regenerate_example_results()
+    planar_results = joinpath(RESULT_DIRECTORY, "planar")
+    spatial_results = joinpath(RESULT_DIRECTORY, "spatial")
+    mkpath(planar_results)
+    mkpath(spatial_results)
+
+    successes = 0
+    partials = 0
+    failures = 0
+    open(REPORT_PATH, "w") do report
+        println(report, "Example-result regeneration")
+        println(report, "Generated ",
+            Dates.format(now(), dateformat"yyyy-mm-dd HH:MM"))
+        println(report)
+
+        planar_models = joinpath(PROJECT_DIRECTORY, "models", "planar")
+        for model in model_files(planar_models, ".toml")
+            stem = splitext(basename(model))[1]
+            output = joinpath(planar_results, "$stem.simp")
+            result = run_example!(report, planar_model_main, model, output)
+            if result == :passed
+                successes += 1
+            else
+                failures += 1
+            end
+        end
+
+        spatial_models = joinpath(PROJECT_DIRECTORY, "models", "spatial")
+        for model in model_files(spatial_models, ".toml")
+            stem = splitext(basename(model))[1]
+            stem == "leaf-spring-assembly" &&
+                (stem = "leaf-spring-assembly-toml")
+            output = joinpath(spatial_results, "$stem.simp")
+            result = run_example!(report, spatial_model_main, model, output)
+            if result == :passed
+                successes += 1
+            else
+                failures += 1
+            end
+        end
+
+        # The rally-van static result must precede the modal and dynamic runs
+        # that reference it.
+        for stem in ("leaf-spring-assembly", "simple-body-surface",
+                "gmc-rally-van-static", "gmc-rally-van-modal",
+                "gmc-rally-van")
+            model = joinpath(spatial_models, "$stem.lua")
+            output = joinpath(spatial_results, "$stem.simp")
+            result = run_example!(report, spatial_model_main, model, output;
+                expected_incomplete = stem == "gmc-rally-van")
+            if result == :passed
+                successes += 1
+            elseif result == :partial
+                partials += 1
+            else
+                failures += 1
+            end
+        end
+
+        println(report)
+        println(report, successes, " passed, ", partials,
+            " expected partial, ", failures, " failed")
+    end
+
+    println()
+    println(successes, " passed, ", partials,
+        " expected partial, ", failures, " failed")
+    println("Report: ", relpath(REPORT_PATH, PROJECT_DIRECTORY))
+    failures == 0 ? 0 : 1
+end
+
+exit(regenerate_example_results())

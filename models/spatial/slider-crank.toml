@@ -1,0 +1,103 @@
+[model]
+name = "slider_crank"
+title = "Spatial slider-crank falling under gravity"
+dimension = "spatial"
+
+[analysis]
+mode = "automatic"
+
+[simulation]
+start_time = 0.0
+end_time = 3.0
+output_samples = 301
+relative_tolerance = 1.0e-7
+absolute_tolerance = 1.0e-9
+initial_step = 1.0e-6
+maximum_step = 0.01
+
+[graphics]
+background = "white"
+body_palette = "colorblind"
+
+[ground]
+type = "ground"
+
+[ground.pin]
+type = "marker"
+
+[ground.pin.graphics]
+shape = "xy_frame"
+axis_length = 0.35
+plane_size = 0.18
+plane_color = "gray65"
+label = "ground revolute"
+
+[ground.slider_plane]
+type = "marker"
+orientation = ["-90°", 1.0, 0.0, 0.0]
+
+[ground.slider_plane.graphics]
+shape = "xy_frame"
+axis_length = 0.30
+plane_size = 3.2
+plane_color = "gray70"
+opacity = 0.14
+label = "slider plane"
+
+[crank]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.0016666666666666668, 0.08416666666666667, 0.08416666666666667]
+position = [0.3535533905932738, 0.3535533905932738, 0.0]
+orientation = ["45°", 0.0, 0.0, 1.0]
+
+[crank.graphics]
+shape = "box"
+size = [1.0, 0.10, 0.10]
+color = "steelblue"
+
+[crank.pin]
+type = "marker"
+position = [-0.5, 0.0, 0.0]
+
+[crank.tip]
+type = "marker"
+position = [0.5, 0.0, 0.0]
+
+[rod]
+type = "rigid_body"
+mass = 1.0
+inertia = [0.0016666666666666668, 0.33416666666666667, 0.33416666666666667]
+position = [1.642521127880033, 0.3535533905932738, 0.0]
+orientation = ["-20.70481105463543°", 0.0, 0.0, 1.0]
+
+[rod.graphics]
+shape = "box"
+size = [2.0, 0.10, 0.10]
+color = "darkorange"
+
+[rod.crank_pin]
+type = "marker"
+position = [-1.0, 0.0, 0.0]
+
+[rod.slider]
+type = "marker"
+position = [1.0, 0.0, 0.0]
+
+[ground_pin]
+type = "revolute"
+markers = ["crank.pin", "ground.pin"]
+rotation_coordinates = true
+
+[connecting_pin]
+type = "revolute"
+markers = ["rod.crank_pin", "crank.tip"]
+
+[slider_guide]
+type = "inplane"
+markers = ["rod.slider", "ground.slider_plane"]
+
+[gravity]
+type = "gravity"
+acceleration = [0.0, -9.81, 0.0]
+bodies = ["crank", "rod"]
