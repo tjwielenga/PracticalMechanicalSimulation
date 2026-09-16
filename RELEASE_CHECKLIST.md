@@ -20,7 +20,7 @@ not a substitute for the living [Project Summary](PROJECT_SUMMARY.md).
       release snapshot.
 - [x] Run the SimpView Web tests and production build from that clean snapshot.
 - [x] Confirm the command-line quick start on macOS.
-- [ ] Confirm the command-line quick start on Linux through public CI.
+- [x] Confirm the command-line quick start on Linux through public CI.
 - [x] Regenerate representative planar and spatial results with release code.
 - [x] Keep SimpView Web as the sole supported viewer and remove superseded
       viewer dependencies.
@@ -33,15 +33,16 @@ not a substitute for the living [Project Summary](PROJECT_SUMMARY.md).
       TOML fields.
 - [x] Confirm that public limitations are stated in the README and Project
       Summary.
-- [ ] Add the public repository URL and release identifier to the citation
+- [x] Add the public repository URL and release identifier to the citation
       file.
 
 ## Release
 
 - [x] Set the release version in `Project.toml` and SimpView Web metadata.
 - [x] Record release notes and known limitations.
-- [ ] Tag the tested commit.
-- [ ] Publish the repository and verify the continuous-integration checks.
+- [x] Tag the tested commit as `v0.1.0`.
+- [x] Publish the repository and verify the macOS, Linux, and SimpView Web
+      continuous-integration checks.
 - [ ] Archive or link the exact supporting models and results used by the
       methods paper when they are ready for publication.
 
@@ -52,6 +53,7 @@ September 16, 2026:
 - clean-snapshot supported Julia suite: 2,345 of 2,345 checks passed;
 - SimpView Web: 19 of 19 checks passed and the production bundle built;
 - npm production dependency audit: no known vulnerabilities reported;
+- public CI: SimpView Web and Julia 1.12 on macOS and Ubuntu passed;
 - planar quick start: complete 81-sample kinematic result;
 - spatial quick start: complete 301-sample dynamic result; and
 - GMC Rally Van: complete 301-frame, five-second dynamic result at 16 m/s.
