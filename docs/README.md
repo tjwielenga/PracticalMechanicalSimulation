@@ -20,7 +20,8 @@ Run a planar model with:
 
 [Common user information](common/README.md) covers facilities used by both
 dimensions, including the [result viewer](common/result-viewer.md), stored
-`.simp` results, and the command-line result tools.
+`.simp` results, the command-line result tools, and the background chapter on
+[numerical stiffness](common/numerical-stiffness.md).
 
 ## Spatial modeler
 

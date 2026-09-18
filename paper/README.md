@@ -31,3 +31,8 @@ The author's local historical archive is not part of the public repository.
 It provides private historical traceability, but the new paper should
 distinguish original terminology from the present reconstruction and should
 not incorporate external proprietary material.
+
+The public user documentation contains a newly written background chapter on
+[numerical stiffness](../docs/common/numerical-stiffness.md). The close
+transcription of the author's 1986 conference paper remains in the ignored
+local historical archive and is not part of the MIT-licensed repository.
